@@ -1,5 +1,5 @@
 <div align="center">
-Форк https://github.com/Flowseal/zapret-discord-youtube c автообновлением и с обходом блокировок от 10/6/2025. Все источники находятся в начале [shizapret.bat](./shizapret.bat).
+Форк https://github.com/Flowseal/zapret-discord-youtube c автообновлением и с обходом блокировок от 10/6/2025. Все источники находятся в начале shizapret.bat.
 
 Альтернатива https://github.com/bol-van/zapret-win-bundle и https://github.com/Flowseal/zapret-discord-youtube
 </div>
@@ -28,7 +28,7 @@
 
 3. Запустите [shizapret.bat](./shizapret.bat). Файл за вас все установит и обновит.
 
-4. Рекомендуется часто обновалять файлы с помощью [update.bat](./update.bat) нажав 0.
+4. Рекомендуется часто обновлять файлы с помощью [update.bat](./update.bat), нажав 0.
 
 ## ℹ️Краткие описания файлов
 
