@@ -1,5 +1,5 @@
 <div align="center">
-Форк https://github.com/Flowseal/zapret-discord-youtube c автообновлением и с обходом блокировок от 10/6/2025. Все источники находятся в начале [shizapret.bat](./shizapret.bat).
+Форк https://github.com/Flowseal/zapret-discord-youtube c автообновлением и с обходом блокировок от 10/6/2025. Все источники находятся в начале shizapret.bat.
 
 Альтернатива https://github.com/bol-van/zapret-win-bundle и https://github.com/Flowseal/zapret-discord-youtube
 </div>
