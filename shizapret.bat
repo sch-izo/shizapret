@@ -11,15 +11,15 @@ cd /d "%~dp0"
 call service.bat status_zapret
 
 if not exist "bin/winws.exe" (
-    call b_update.bat bin
+    call update.bat bin
 )
 
 if not exist "lists/list-general.txt" (
-    call b_update.bat list
+    call update.bat list
 )
 
 if not exist "lists/ipset-cloudflare.txt" (
-    call b_update.bat cf
+    call update.bat cf
 )
 
 
