@@ -20,7 +20,7 @@
 > [!IMPORTANT]
 > Все файлы в папке [`bin`](./bin) взяты из [zapret-win-bundle/zapret-winws](https://github.com/bol-van/zapret-win-bundle/tree/master/zapret-winws). Вы можете это проверить с помощью хэшей/контрольных сумм.
 
-## ⚙️Использование
+## ❤Использование
 
 1. Загрузите архив (zip) со [страницы последнего релиза](https://github.com/sch-izo/shizapret/releases/latest)
 
@@ -29,6 +29,14 @@
 3. Запустите [shizapret.bat](./shizapret.bat). Файл за вас все установит и обновит.
 
 4. Рекомендуется часто обновлять файлы с помощью [update.bat](./update.bat), нажав 0.
+
+## ⚙️Настройки
+
+Чтобы включить, добавьте 1 в конце параметра. Пример:
+```
+EverythingCygwin1 = Выключено
+EverythingCygwin11 = Включено
+```
 
 ## ℹ️Краткие описания файлов
 
