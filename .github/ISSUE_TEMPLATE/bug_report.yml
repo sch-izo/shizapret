@@ -10,8 +10,8 @@ body:
       label: ⚠️ Чеклист
       description: Перед созданием нового Issue, удостоверьтесь что выполнили следующие пункты
       options:
-        - label: Я искал решение проблемы в [README](https://github.com/Flowseal/zapret-discord-youtube/blob/main/README.md) и среди [Issues](https://github.com/Flowseal/zapret-discord-youtube/issues)
-        - label: Я скачал ``zapret-discord-youtube`` из [релизов официального репозитория](https://github.com/Flowseal/zapret-discord-youtube/releases)
+        - label: Я искал решение проблемы в [README](https://github.com/sch-izo/shizapret) и среди [Issues](https://github.com/sch-izo/shizapret/issues)
+        - label: Я скачал ``shizapret`` из [релизов официального репозитория](https://github.com/sch-izo/shizapret/releases)
 
   - type: textarea
     id: description
@@ -25,8 +25,8 @@ body:
   - type: textarea
     id: version
     attributes:
-      label: Версия zapret-discord-youtube
-      description: Версия zapret-discord-youtube на которой вы словили проблему
+      label: Версия shizapret
+      description: Версия shizapret на которой вы словили проблему
       placeholder: Версия
     validations:
       required: true
@@ -39,19 +39,6 @@ body:
       placeholder: |
         Напишите здесь шаги, с помощью которых можно повторить вашу проблему
         на других компьютерах
-
-  - type: textarea
-    id: bat-name
-    attributes:
-      label: Какой .bat файл вы используете?
-    validations:
-      required: true
-
-  - type: textarea
-    id: other-bat
-    attributes:
-      label: Использовали ли вы другие .bat?
-      description: Пробовали ли вы использовать другой .bat для устранения проблемы? Если использовали, то какие?
 
   - type: textarea
     id: additions
