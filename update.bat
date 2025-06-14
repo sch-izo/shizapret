@@ -39,12 +39,8 @@ if "%upd%"=="3" goto bin
 
 :cf
 cls
-echo Downloading ipset-amazon.txt...
-powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-amazon.txt -Destination lists"
-cls
 echo Downloading ipset-cloudflare.txt...
 powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt -Destination lists"
-copy /B lists/ipset-cloudflare.txt + lists/ipset-amazon.txt
 exit /b
 
 :bin
@@ -135,12 +131,8 @@ if exist "params/Updater/EverythingCygwin11" (
 )
 if exist "params/Updater/EverythingIPSet1" (
     cls
-    echo Downloading ipset-amazon.txt...
-    powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-amazon.txt -Destination lists"
-    cls
     echo Downloading ipset-cloudflare.txt...
     powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt -Destination lists"
-    copy /B lists/ipset-cloudflare.txt + lists/ipset-amazon.txt
 )
 if exist "params/Updater/EverythingList1" (
     cls
