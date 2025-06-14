@@ -1,7 +1,8 @@
 :: https://github.com/Flowseal/zapret-discord-youtube
 :: https://github.com/V3nilla/IPSets-For-Bypass-in-Russia
 :: https://github.com/Flowseal/zapret-discord-youtube/discussions/3279
-:: https://p.thenewone.lol/domains-export.txt (https://antizapret.prostovpn.org/domains-export.txt)
+:: https://p.thenewone.lol/domains-export.txt (https://antizapret.prostovpn.org/domains-export.txt
+:: https://steamcommunity.com/sharedfiles/filedetails/?id=3496724173
 
 @echo off
 title shizapret

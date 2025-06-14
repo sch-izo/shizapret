@@ -106,6 +106,54 @@ echo ffzap.com>> lists/list-general.txt
 echo betterttv.net>> lists/list-general.txt
 echo 7tv.app>> lists/list-general.txt
 echo 7tv.io>> lists/list-general.txt
+echo signin.aws.amazon.com>> lists/list-general.txt
+echo cloudfront.net>> lists/list-general.txt
+echo s3.amazonaws.com>> lists/list-general.txt
+echo awsstatic.com>> lists/list-general.txt
+echo console.aws.a2z.com>> lists/list-general.txt
+echo amazonaws.com>> lists/list-general.txt
+echo awsapps.com>> lists/list-general.txt
+echo sso.amazonaws.com>> lists/list-general.txt
+echo cloudfront.net>> lists/list-general.txt
+echo deadbydaylight.com>> lists/list-general.txt
+echo deadbydaylight.fandom.com>> lists/list-general.txt
+echo argotunnel.com>> lists/list-general.txt
+echo cfargotunnel.com>> lists/list-general.txt
+echo cfl.re>> lists/list-general.txt
+echo cloudflare-dns.com>> lists/list-general.txt
+echo cloudflare-ech.com>> lists/list-general.txt
+echo cloudflare-esni.com>> lists/list-general.txt
+echo cloudflare-gateway.com>> lists/list-general.txt
+echo cloudflare-quic.com>> lists/list-general.txt
+echo cloudflare.com>> lists/list-general.txt
+echo cloudflare.net>> lists/list-general.txt
+echo cloudflare.tv>> lists/list-general.txt
+echo cloudflareaccess.com>> lists/list-general.txt
+echo cloudflareapps.com>> lists/list-general.txt
+echo cloudflarebolt.com>> lists/list-general.txt
+echo cloudflareclient.com>> lists/list-general.txt
+echo cloudflareinsights.com>> lists/list-general.txt
+echo cloudflareok.com>> lists/list-general.txt
+echo cloudflarepartners.com>> lists/list-general.txt
+echo cloudflareportal.com>> lists/list-general.txt
+echo cloudflarepreview.com>> lists/list-general.txt
+echo cloudflareresolve.com>> lists/list-general.txt
+echo cloudflaressl.com>> lists/list-general.txt
+echo cloudflarestatus.com>> lists/list-general.txt
+echo cloudflarestorage.com>> lists/list-general.txt
+echo cloudflarestream.com>> lists/list-general.txt
+echo cloudflaretest.com>> lists/list-general.txt
+echo cloudflarewarp.com>> lists/list-general.txt
+echo every1dns.net>> lists/list-general.txt
+echo isbgpsafeyet.com>> lists/list-general.txt
+echo one.one.one.one>> lists/list-general.txt
+echo one.one.one>> lists/list-general.txt
+echo pacloudflare.com>> lists/list-general.txt
+echo pages.dev>> lists/list-general.txt
+echo trycloudflare.com>> lists/list-general.txt
+echo videodelivery.net>> lists/list-general.txt
+echo warp.plus>> lists/list-general.txt
+echo workers.dev>> lists/list-general.txt
 exit /b
 
 :et
@@ -182,5 +230,53 @@ if exist "params/Updater/EverythingList1" (
     echo betterttv.net>> lists/list-general.txt
     echo 7tv.app>> lists/list-general.txt
     echo 7tv.io>> lists/list-general.txt
+    echo signin.aws.amazon.com>> lists/list-general.txt
+    echo cloudfront.net>> lists/list-general.txt
+    echo s3.amazonaws.com>> lists/list-general.txt
+    echo awsstatic.com>> lists/list-general.txt
+    echo console.aws.a2z.com>> lists/list-general.txt
+    echo amazonaws.com>> lists/list-general.txt
+    echo awsapps.com>> lists/list-general.txt
+    echo sso.amazonaws.com>> lists/list-general.txt
+    echo cloudfront.net>> lists/list-general.txt
+    echo deadbydaylight.com>> lists/list-general.txt
+    echo deadbydaylight.fandom.com>> lists/list-general.txt
+    echo argotunnel.com>> lists/list-general.txt
+    echo cfargotunnel.com>> lists/list-general.txt
+    echo cfl.re>> lists/list-general.txt
+    echo cloudflare-dns.com>> lists/list-general.txt
+    echo cloudflare-ech.com>> lists/list-general.txt
+    echo cloudflare-esni.com>> lists/list-general.txt
+    echo cloudflare-gateway.com>> lists/list-general.txt
+    echo cloudflare-quic.com>> lists/list-general.txt
+    echo cloudflare.com>> lists/list-general.txt
+    echo cloudflare.net>> lists/list-general.txt
+    echo cloudflare.tv>> lists/list-general.txt
+    echo cloudflareaccess.com>> lists/list-general.txt
+    echo cloudflareapps.com>> lists/list-general.txt
+    echo cloudflarebolt.com>> lists/list-general.txt
+    echo cloudflareclient.com>> lists/list-general.txt
+    echo cloudflareinsights.com>> lists/list-general.txt
+    echo cloudflareok.com>> lists/list-general.txt
+    echo cloudflarepartners.com>> lists/list-general.txt
+    echo cloudflareportal.com>> lists/list-general.txt
+    echo cloudflarepreview.com>> lists/list-general.txt
+    echo cloudflareresolve.com>> lists/list-general.txt
+    echo cloudflaressl.com>> lists/list-general.txt
+    echo cloudflarestatus.com>> lists/list-general.txt
+    echo cloudflarestorage.com>> lists/list-general.txt
+    echo cloudflarestream.com>> lists/list-general.txt
+    echo cloudflaretest.com>> lists/list-general.txt
+    echo cloudflarewarp.com>> lists/list-general.txt
+    echo every1dns.net>> lists/list-general.txt
+    echo isbgpsafeyet.com>> lists/list-general.txt
+    echo one.one.one.one>> lists/list-general.txt
+    echo one.one.one>> lists/list-general.txt
+    echo pacloudflare.com>> lists/list-general.txt
+    echo pages.dev>> lists/list-general.txt
+    echo trycloudflare.com>> lists/list-general.txt
+    echo videodelivery.net>> lists/list-general.txt
+    echo warp.plus>> lists/list-general.txt
+    echo workers.dev>> lists/list-general.txt
 )
 exit /b
