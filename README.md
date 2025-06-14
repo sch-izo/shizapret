@@ -3,6 +3,12 @@
 
 Альтернатива https://github.com/bol-van/zapret-win-bundle и https://github.com/Flowseal/zapret-discord-youtube
 </div>
+<div align="center" style="line-height: 1;">
+  <a href="https://www.github.com/sch-izo/shizapret/releases/"><img alt="downloads"
+    src="https://img.shields.io/github/downloads/sch-izo/shizapret/total"/></a>
+  <a href="https://www.github.com/sch-izo/shizapret/releases/latest"><img alt="downloads@latest"
+    src="https://img.shields.io/github/downloads/sch-izo/shizapret/latest/total"/></a>
+</div>
 
 > [!CAUTION]
 >
