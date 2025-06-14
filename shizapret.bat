@@ -1,5 +1,5 @@
 :: https://github.com/Flowseal/zapret-discord-youtube
-:: https://github.com/V3nilla/IPSets-For-Bypass-in-Russia/blob/main/ipset-cloudflare.txt
+:: https://github.com/V3nilla/IPSets-For-Bypass-in-Russia
 :: https://github.com/Flowseal/zapret-discord-youtube/discussions/3279
 :: https://p.thenewone.lol/domains-export.txt (https://antizapret.prostovpn.org/domains-export.txt)
 
@@ -20,6 +20,10 @@ if not exist "lists/list-general.txt" (
 
 if not exist "lists/ipset-cloudflare.txt" (
     call update.bat cf
+)
+
+if exist "params/AutoUpdater/AutoUpdate1" (
+    call update.bat et
 )
 
 

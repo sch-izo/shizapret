@@ -19,22 +19,32 @@ if "%~1"=="bin" (
     exit /b
 )
 
+if "%~1"=="et" (
+    call :et
+    exit /b
+)
+
 :menu
 cls
 echo 0. Everything
-echo 1. IP Set
+echo 1. IP Sets
 echo 2. List
 echo 3. Bin Folder
-set /p upd=Update (0-3):
+set /p upd=Update (0-3): 
 
 if "%upd%"=="0" goto et
 if "%upd%"=="1" goto cf
 if "%upd%"=="2" goto list
 if "%upd%"=="3" goto bin
+
 :cf
+cls
+echo Downloading ipset-amazon.txt...
+powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-amazon.txt -Destination lists"
 cls
 echo Downloading ipset-cloudflare.txt...
 powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt -Destination lists"
+copy /B lists/ipset-cloudflare.txt + lists/ipset-amazon.txt
 exit /b
 
 :bin
@@ -125,8 +135,12 @@ if exist "params/Updater/EverythingCygwin11" (
 )
 if exist "params/Updater/EverythingIPSet1" (
     cls
+    echo Downloading ipset-amazon.txt...
+    powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-amazon.txt -Destination lists"
+    cls
     echo Downloading ipset-cloudflare.txt...
     powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt -Destination lists"
+    copy /B lists/ipset-cloudflare.txt + lists/ipset-amazon.txt
 )
 if exist "params/Updater/EverythingList1" (
     cls

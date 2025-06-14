@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableDelayedExpansion
-set "LOCAL_VERSION=1.7.2b"
+set "LOCAL_VERSION=1.2.0"
 
 :: External commands
 if "%~1"=="status_zapret" (
@@ -233,9 +233,9 @@ goto menu
 chcp 437 > nul
 
 :: Set current version and URLs
-set "GITHUB_VERSION_URL=https://raw.githubusercontent.com/Flowseal/zapret-discord-youtube/main/.service/version.txt"
-set "GITHUB_RELEASE_URL=https://github.com/Flowseal/zapret-discord-youtube/releases/tag/"
-set "GITHUB_DOWNLOAD_URL=https://github.com/Flowseal/zapret-discord-youtube/releases/latest/download/zapret-discord-youtube-"
+set "GITHUB_VERSION_URL=https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/version.txt"
+set "GITHUB_RELEASE_URL=https://github.com/sch-izo/shizapret/releases/tag/"
+set "GITHUB_DOWNLOAD_URL=https://github.com/sch-izo/shizapret/releases/latest/download/shizapret-"
 
 :: Get the latest version from GitHub
 for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri \"%GITHUB_VERSION_URL%\" -Headers @{\"Cache-Control\"=\"no-cache\"} -TimeoutSec 5).Content.Trim()" 2^>nul') do set "GITHUB_VERSION=%%A"
@@ -262,7 +262,7 @@ if "%LOCAL_VERSION%"=="%GITHUB_VERSION%" (
 
     if /i "!CHOICE!"=="Y" (
         echo Opening the download page...
-        start "" "%GITHUB_DOWNLOAD_URL%%GITHUB_VERSION%.rar"
+        start "" "%GITHUB_DOWNLOAD_URL%%GITHUB_VERSION%.zip"
     )
 )
 
