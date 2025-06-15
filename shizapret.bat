@@ -11,7 +11,7 @@ cd /d "%~dp0"
 
 call service.bat status_zapret
 
-if not exist "bin/winws.exe" (
+if not exist "bin/cygwin1.dll" (
     call update.bat bin
 )
 
