@@ -76,6 +76,10 @@ EverythingCygwin11 = Включено
 
   Google: 8.8.8.8
 
+- **Поменяйте стратегию обхода**
+
+  Замените все упоминания "badseq" в [shizapret.bat](./shizapret.bat) на "md5sig"
+
 ### Обход не работает
 
 > [!IMPORTANT]
