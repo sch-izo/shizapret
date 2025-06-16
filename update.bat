@@ -154,6 +154,8 @@ echo trycloudflare.com>> lists/list-general.txt
 echo videodelivery.net>> lists/list-general.txt
 echo warp.plus>> lists/list-general.txt
 echo workers.dev>> lists/list-general.txt
+echo yt4.ggpht.com>> lists/list-general.txt
+echo yt3.googleusercontent.com>> lists/list-general.txt
 exit /b
 
 :et
@@ -278,5 +280,7 @@ if exist "params/Updater/EverythingList1" (
     echo videodelivery.net>> lists/list-general.txt
     echo warp.plus>> lists/list-general.txt
     echo workers.dev>> lists/list-general.txt
+    echo yt4.ggpht.com>> lists/list-general.txt
+    echo yt3.googleusercontent.com>> lists/list-general.txt
 )
 exit /b
