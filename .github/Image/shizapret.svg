@@ -1,0 +1,24 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_2)">
+<path d="M0 0H1024V1024H0V0Z" fill="black"/>
+<g clip-path="url(#clip1_6_2)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M680.009 283.948L569.161 173.1L454.728 172.989L172.99 454.728V569.272L283.837 680.119L368.821 595.136L285.685 512L512 285.685L595.137 368.821L680.009 283.948Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M343.991 740.052L454.839 850.901L569.272 851.013L851.013 569.272V454.728L740.163 343.88L655.179 428.864L738.315 512L512 738.315L428.863 655.179L343.991 740.052Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M483.81 397H598.355V511.545V626.355H483.545L369 511.81L483.81 397Z" fill="white"/>
+<rect x="-46" width="558" height="1024" fill="black"/>
+<path d="M569.5 231H233V428H411C411 428 440.361 562.008 411 639C382.45 713.865 276 793.5 276 793.5H376.5H477" stroke="#C8C8C8" stroke-width="117"/>
+<path d="M569.5 231H233V428H411C411 428 440.361 562.008 411 639C382.45 713.865 276 793.5 276 793.5H376.5H477" stroke="white" stroke-opacity="0.2" stroke-width="117"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M477.009 851.133L420.5 735H477L515.324 735.12L738.324 512.12L655.188 428.983L740.172 344L851.022 454.847V569.392L569.281 851.133H477.009Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M569.161 173.1L680.009 283.948L595.137 368.821L512 285.685L454.728 172.989L569.161 173.1Z" fill="white"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_6_2">
+<rect width="1024" height="1024" rx="256" fill="white"/>
+</clipPath>
+<clipPath id="clip1_6_2">
+<rect width="678" height="678" fill="white" transform="translate(173 173)"/>
+</clipPath>
+</defs>
+<!-- Спасибо @dotfelixan за логотип! -->
+</svg>
