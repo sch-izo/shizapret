@@ -1,18 +1,30 @@
-<div align="center">
-Форк https://github.com/Flowseal/zapret-discord-youtube c автообновлением и с обходом блокировок от 10/6/2025. Все источники находятся в начале shizapret.bat.
-
-Альтернатива https://github.com/bol-van/zapret-win-bundle и https://github.com/Flowseal/zapret-discord-youtube
-</div>
-<div align="center" style="line-height: 1;">
+<div>
+  <img src="./.github/Image/shizapret.svg" width="200" height="200" align="left">
+  <h1>
+   <p align="left">shizapret</p>
   <a href="https://www.github.com/sch-izo/shizapret/releases/"><img alt="downloads"
-    src="https://img.shields.io/github/downloads/sch-izo/shizapret/total?style=plastic"/></a>
-  <a href="https://www.github.com/sch-izo/shizapret/releases/"><img alt="release"
-    src="https://img.shields.io/github/v/release/sch-izo/shizapret?style=plastic"/></a>
-  <a href="https://www.github.com/sch-izo/shizapret/tree/main"><img alt="code size"
-    src="https://img.shields.io/github/languages/code-size/sch-izo/shizapret?style=plastic"/></a>
+    src="https://img.shields.io/github/downloads/sch-izo/shizapret/total?labelColor=161616&color=242424" height="21" align="left"/></a>
+  </a>
+  <br>
   <a href="https://www.github.com/sch-izo/shizapret/releases/latest"><img alt="downloads@latest"
-    src="https://img.shields.io/github/downloads/sch-izo/shizapret/latest/total?style=plastic"/></a>
+    src="https://img.shields.io/github/downloads/sch-izo/shizapret/latest/total?labelColor=161616&color=242424" height="21" align="left"/></a>
+  </a>
+  <br>
+  <a href="https://www.github.com/sch-izo/shizapret/releases/""><img alt="release"
+    src="https://img.shields.io/github/v/release/sch-izo/shizapret?labelColor=161616&color=242424" height="21" align="left"/></a>
+  </a>
+  <br>
+  <a href="https://www.github.com/sch-izo/shizapret/tree/main"><img alt="code size"
+    src="https://img.shields.io/github/languages/code-size/sch-izo/shizapret?labelColor=161616&color=242424" height="21" align="left"/></a>
+  </a>
+  <br>
 </div>
+
+### Форк Flowseal/zapret-discord-youtube c автообновлением и обходом блокировок от 10/6/2025
+
+###### спасибо @dotFelixan за иконку
+
+#
 
 > [!CAUTION]
 >
