@@ -1,6 +1,5 @@
 @echo off
-setlocal EnableDelayedExpansion
-set "LOCAL_VERSION=1.3.1"
+set "LOCAL_VERSION=1.3.2"
 
 :: External commands
 if "%~1"=="status_zapret" (
@@ -13,6 +12,12 @@ if "%~1"=="check_updates" (
     exit /b
 )
 
+if "%~1"=="load_game_filter" (
+    call :game_switch_status
+    exit /b
+)
+
+
 if "%1"=="admin" (
     echo Started with admin rights
 ) else (
@@ -23,23 +28,28 @@ if "%1"=="admin" (
 
 
 :: MENU ================================
+setlocal EnableDelayedExpansion
 :menu
 cls
+call :game_switch_status
+
 set "menu_choice=null"
 echo =======================
 echo 1. Install Service
 echo 2. Remove Services
-echo 3. Check Service Status
+echo 3. Check Status
 echo 4. Run Diagnostics
 echo 5. Check Updates
+echo 6. Switch Game Filter (%GameFilterStatus%)
 echo 0. Exit
-set /p menu_choice=Enter choice (0-5): 
+set /p menu_choice=Enter choice (0-6): 
 
 if "%menu_choice%"=="1" goto service_install
 if "%menu_choice%"=="2" goto service_remove
 if "%menu_choice%"=="3" goto service_status
 if "%menu_choice%"=="4" goto service_diagnostics
 if "%menu_choice%"=="5" goto service_check_updates
+if "%menu_choice%"=="6" goto game_switch
 if "%menu_choice%"=="0" exit /b
 goto menu
 
@@ -47,16 +57,16 @@ goto menu
 :: STATUS ==============================
 :service_status
 cls
-chcp 65001 > nul
+chcp 437 > nul
 echo Checking services and tasks...
 call :test_service zapret
 call :test_service WinDivert
 
 tasklist /FI "IMAGENAME eq winws.exe" | find /I "winws.exe" > nul
 if !errorlevel!==0 (
-    echo Bypass is ACTIVE
+    call :PrintGreen "Bypass is ACTIVE"
 ) else (
-    echo Bypass NOT FOUND
+    call :PrintRed "Bypass NOT FOUND"
 )
 
 pause
@@ -78,7 +88,7 @@ if "%ServiceStatus%"=="RUNNING" (
         echo "%ServiceName%" service is RUNNING.
     )
 ) else if not "%~2"=="soft" (
-    echo "%ServiceName%" is NOT running.
+    echo "%ServiceName%" service is NOT running.
 )
 
 exit /b
@@ -117,7 +127,7 @@ echo Pick one of the options:
 set "count=0"
 for %%f in (*.bat) do (
     set "filename=%%~nxf"
-    if /i not "!filename:~0,7!"=="service" if /i not "!filename:~0,17!"=="cloudflare_switch" (
+    if /i not "!filename:~0,7!"=="service" (
         set /a count+=1
         echo !count!. %%f
         set "file!count!=%%f"
@@ -182,8 +192,10 @@ for /f "tokens=*" %%a in ('type "!selectedFile!"') do (
                     ) else (
                         set "arg=\!QUOTE!%~dp0!arg!\!QUOTE!"
                     )
+                ) else if "!arg:~0,12!" EQU "%%GameFilter%%" (
+                    set "arg=%GameFilter%"
                 )
-                
+
                 if !mergeargs!==1 (
                     set "temp_args=!temp_args!,!arg!"
                 ) else if !mergeargs!==3 (
@@ -231,6 +243,7 @@ goto menu
 :: CHECK UPDATES =======================
 :service_check_updates
 chcp 437 > nul
+cls
 
 :: Set current version and URLs
 set "GITHUB_VERSION_URL=https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/version.txt"
@@ -251,22 +264,27 @@ if not defined GITHUB_VERSION (
 :: Version comparison
 if "%LOCAL_VERSION%"=="%GITHUB_VERSION%" (
     echo Latest version installed: %LOCAL_VERSION%
-) else (
-    echo New version available: %GITHUB_VERSION%
-    echo Release page: %GITHUB_RELEASE_URL%%GITHUB_VERSION%
     
-    set "CHOICE="
-    set /p "CHOICE=Do you want to automatically download the new version? (Y/N) (default: Y) "
-    if "!CHOICE!"=="" set "CHOICE=Y"
-    if "!CHOICE!"=="y" set "CHOICE=Y"
+    if "%1"=="soft" exit /b
+    pause
+    goto menu
+) 
 
-    if /i "!CHOICE!"=="Y" (
-        echo Opening the download page...
-        start "" "%GITHUB_DOWNLOAD_URL%%GITHUB_VERSION%.zip"
-    )
+echo New version available: %GITHUB_VERSION%
+echo Release page: %GITHUB_RELEASE_URL%%GITHUB_VERSION%
+
+set "CHOICE="
+set /p "CHOICE=Do you want to automatically download the new version? (Y/N) (default: Y) "
+if "%CHOICE%"=="" set "CHOICE=Y"
+if /i "%CHOICE%"=="y" set "CHOICE=Y"
+
+if /i "%CHOICE%"=="Y" (
+    echo Opening the download page...
+    start "" "%GITHUB_DOWNLOAD_URL%%GITHUB_VERSION%.zip"
 )
 
-if "%1"=="soft" exit /b 
+
+if "%1"=="soft" exit /b
 pause
 goto menu
 
@@ -283,7 +301,7 @@ if !errorlevel!==0 (
     call :PrintRed "https://github.com/Flowseal/zapret-discord-youtube/issues/417"
 ) else (
     call :PrintGreen "Adguard check passed"
-) 
+)
 echo:
 
 :: Killer
@@ -387,6 +405,38 @@ if /i "!CHOICE!"=="Y" (
     )
 )
 echo:
+
+pause
+goto menu
+
+
+:: GAME SWITCH ========================
+:game_switch_status
+chcp 437 > nul
+
+set "gameFlagFile=%~dp0bin\game_filter.enabled"
+
+if exist "%gameFlagFile%" (
+    set "GameFilterStatus=enabled"
+    set "GameFilter=1024-65535"
+) else (
+    set "GameFilterStatus=disabled"
+    set "GameFilter=0"
+)
+exit /b
+
+
+:game_switch
+chcp 437 > nul
+cls
+
+if not exist "%gameFlagFile%" (
+    echo Enabling game filter...
+    echo ENABLED > "%gameFlagFile%"
+) else (
+    echo Disabling game filter...
+    del /f /q "%gameFlagFile%"
+)
 
 pause
 goto menu
