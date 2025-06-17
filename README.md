@@ -20,7 +20,7 @@
   <br>
 </div>
 
-### Форк Flowseal/zapret-discord-youtube c автообновлением и обходом блокировок от 10/6/2025
+### Форк Flowseal/zapret-discord-youtube c автообновлением и обходом многих блокировок от Роскомнадзора
 
 ###### спасибо @dotFelixan за иконку
 
