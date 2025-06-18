@@ -27,7 +27,7 @@ body:
     attributes:
       label: Версия shizapret
       description: Версия shizapret на которой вы словили проблему
-      placeholder: Версия
+      placeholder: v1.1.1
     validations:
       required: true
 
@@ -35,10 +35,31 @@ body:
     id: reproduction
     attributes:
       label: Шаги воспроизведения проблемы
-      description: Шаги по воспроизведению поведения (вашей проблемы).
-      placeholder: |
-        Напишите здесь шаги, с помощью которых можно повторить вашу проблему
-        на других компьютерах
+      description: Напишите здесь шаги, с помощью которых можно повторить вашу проблему на других компьютерах
+      placeholder: 1. Открыть update.bat
+      2. Нажать `0`
+
+
+  - type: textarea
+    id: bat-name
+    attributes:
+      label: Какой .bat файл вы используете?
+    validations:
+      required: true
+      placeholder: shizapret (alt).bat
+
+  - type: textarea
+    id: other-bat
+    attributes:
+      label: Использовали ли вы другие .bat?
+      description: Пробовали ли вы использовать другой .bat для устранения проблемы? Если использовали, то какие?
+
+  - type: textarea
+    id: provider
+    attributes:
+      label: Какой у вас интернет-провайдер?
+      description: Если речь идет о нерабочем сайте/приложении, какой у вас интернет-провайдер?
+      placeholder: Московская Область, МегаФон
 
   - type: textarea
     id: additions
