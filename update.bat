@@ -61,10 +61,7 @@ exit /b
 :list
 cls
 echo Downloading list-general.txt...
-powershell -Command "Start-BitsTransfer -Source https://p.thenewone.lol/domains-export.txt -Destination lists/list-general.txt"
-echo cloudflare-ech.com>> lists/list-general.txt
-echo dis.gd>> lists/list-general.txt
-echo discord-attachments-uploads-prd.storage.googleapis.com>> lists/list-general.txt
+powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt -Destination lists/list-general.txt"
 echo discord.app>> lists/list-general.txt
 echo discord.co>> lists/list-general.txt
 echo discord.com>> lists/list-general.txt
@@ -187,10 +184,7 @@ if exist "params/Updater/EverythingIPSet1" (
 if exist "params/Updater/EverythingList1" (
     cls
     echo Downloading list-general.txt...
-    powershell -Command "Start-BitsTransfer -Source https://p.thenewone.lol/domains-export.txt -Destination lists/list-general.txt"
-    echo cloudflare-ech.com>> lists/list-general.txt
-    echo dis.gd>> lists/list-general.txt
-    echo discord-attachments-uploads-prd.storage.googleapis.com>> lists/list-general.txt
+    powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt -Destination lists/list-general.txt"
     echo discord.app>> lists/list-general.txt
     echo discord.co>> lists/list-general.txt
     echo discord.com>> lists/list-general.txt

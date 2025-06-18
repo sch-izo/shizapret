@@ -1,5 +1,5 @@
 @echo off
-set "LOCAL_VERSION=1.3.2"
+set "LOCAL_VERSION=1.4.0"
 
 :: External commands
 if "%~1"=="status_zapret" (
@@ -107,6 +107,8 @@ net stop "WinDivert"
 sc delete "WinDivert"
 net stop "WinDivert14"
 sc delete "WinDivert14"
+
+if "%1"=="shizapret" exit /b
 
 pause
 goto menu
@@ -274,13 +276,22 @@ echo New version available: %GITHUB_VERSION%
 echo Release page: %GITHUB_RELEASE_URL%%GITHUB_VERSION%
 
 set "CHOICE="
-set /p "CHOICE=Do you want to automatically download the new version? (Y/N) (default: Y) "
+set /p "CHOICE=Do you want to install the new version? (Y/N) (default: Y) "
 if "%CHOICE%"=="" set "CHOICE=Y"
 if /i "%CHOICE%"=="y" set "CHOICE=Y"
 
 if /i "%CHOICE%"=="Y" (
-    echo Opening the download page...
-    start "" "%GITHUB_DOWNLOAD_URL%%GITHUB_VERSION%.zip"
+    cd /d "%~dp0"
+    cls
+    echo Downloading shizapret-%GITHUB_VERSION%.zip...
+    powershell -Command "Start-BitsTransfer -Source %GITHUB_DOWNLOAD_URL%%GITHUB_VERSION%.zip"
+    cls
+    echo Extracting shizapret-%GITHUB_VERSION%.zip...
+    powershell -Command "Expand-Archive 'shizapret-%GITHUB_VERSION%.zip' '%GITHUB_VERSION%'"
+    del shizapret-%GITHUB_VERSION%.zip
+    call :service_remove shizapret
+    cls
+    echo Updated successfully!
 )
 
 
