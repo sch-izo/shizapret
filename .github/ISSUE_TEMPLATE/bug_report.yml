@@ -36,8 +36,7 @@ body:
     attributes:
       label: Шаги воспроизведения проблемы
       description: Напишите здесь шаги, с помощью которых можно повторить вашу проблему на других компьютерах
-      placeholder: 1. Открыть update.bat
-      2. Нажать `0`
+      placeholder: 1. Открыть update.bat 2. Нажать `0`
 
 
   - type: textarea
