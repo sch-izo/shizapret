@@ -31,7 +31,7 @@ if exist "params/AutoUpdater/AutoUpdate1" (
 set "BIN=%~dp0bin\"
 set "LISTS=%~dp0lists\"
 
-start "shizapret" /min "%BIN%winws.exe" --wf-tcp=80,443 --wf-udp=443,50000-50099,0-65535 ^
+start "shizapret: old" /min "%BIN%winws.exe" --wf-tcp=80,443 --wf-udp=443,50000-50099,0-65535 ^
 
 --comment Discord(Calls) --filter-udp=50000-50099 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=0x00 --dpi-desync-fake-stun=0x00 --dpi-desync-repeats=6 --new ^
 
