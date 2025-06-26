@@ -1,5 +1,5 @@
 @echo off
-set "LOCAL_VERSION=1.4.0"
+set "LOCAL_VERSION=1.4.2"
 
 :: External commands
 if "%~1"=="status_zapret" (
@@ -130,9 +130,11 @@ set "count=0"
 for %%f in (*.bat) do (
     set "filename=%%~nxf"
     if /i not "!filename:~0,7!"=="service" (
-        set /a count+=1
-        echo !count!. %%f
-        set "file!count!=%%f"
+        if /i not "!filename!"=="update.bat" (
+            set /a count+=1
+            echo !count!. %%f
+            set "file!count!=%%f"
+        )
     )
 )
 
@@ -444,9 +446,11 @@ cls
 if not exist "%gameFlagFile%" (
     echo Enabling game filter...
     echo ENABLED > "%gameFlagFile%"
+    call :PrintYellow "Restart shizapret to apply the changes."
 ) else (
     echo Disabling game filter...
     del /f /q "%gameFlagFile%"
+    call :PrintYellow "Restart shizapret to apply the changes."
 )
 
 pause
