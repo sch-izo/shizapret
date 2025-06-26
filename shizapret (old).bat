@@ -12,19 +12,19 @@ cd /d "%~dp0"
 call service.bat status_zapret
 
 if not exist "bin/cygwin1.dll" (
-    call update.bat bin
+    call calls.bat bin
 )
 
 if not exist "lists/list-general.txt" (
-    call update.bat list
+    call calls.bat list
 )
 
-if not exist "lists/ipset-cloudflare.txt" (
-    call update.bat cf
+if not exist "lists/ipset-all.txt" (
+    call calls.bat ips
 )
 
 if exist "params/AutoUpdater/AutoUpdate1" (
-    call update.bat et
+    call calls.bat et
 )
 
 
@@ -47,8 +47,8 @@ start "shizapret: old" /min "%BIN%winws.exe" --wf-tcp=80,443 --wf-udp=443,50000-
 
 --comment WireGuard --filter-udp=0-65535 --filter-l7=wireguard --dpi-desync=fake --dpi-desync-fake-wireguard=0x00 --dpi-desync-cutoff=n2 --new ^
 
---filter-udp=443 --ipset="%LISTS%ipset-cloudflare.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic="%BIN%quic_initial_www_google_com.bin" --new ^
+--filter-udp=443 --ipset="%LISTS%ipset-all.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic="%BIN%quic_initial_www_google_com.bin" --new ^
 
---filter-tcp=80 --ipset="%LISTS%ipset-cloudflare.txt" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=badseq --new ^
+--filter-tcp=80 --ipset="%LISTS%ipset-all.txt" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=badseq --new ^
 
---filter-tcp=443 --ipset="%LISTS%ipset-cloudflare.txt" --dpi-desync=split2 --dpi-desync-split-seqovl=681 --dpi-desync-split-seqovl-pattern="%BIN%tls_clienthello_www_google_com.bin"
+--filter-tcp=443 --ipset="%LISTS%ipset-all.txt" --dpi-desync=split2 --dpi-desync-split-seqovl=681 --dpi-desync-split-seqovl-pattern="%BIN%tls_clienthello_www_google_com.bin"

@@ -1,5 +1,5 @@
 @echo off
-set "LOCAL_VERSION=1.4.2"
+set "LOCAL_VERSION=1.5.0"
 
 :: External commands
 if "%~1"=="status_zapret" (
@@ -34,7 +34,7 @@ cls
 call :game_switch_status
 
 set "menu_choice=null"
-echo =======================
+echo =========Menu==========
 echo 1. Install Service
 echo 2. Remove Services
 echo 3. Check Status
@@ -42,7 +42,13 @@ echo 4. Run Diagnostics
 echo 5. Check Updates
 echo 6. Switch Game Filter (%GameFilterStatus%)
 echo 0. Exit
-set /p menu_choice=Enter choice (0-6): 
+echo ======shizapret========
+echo 11. Update bin Folder
+echo 12. Update lists/list-general.txt
+echo 13. Update lists/ipset-all.txt
+echo 14. Update Everything
+echo 15. Change Settings
+set /p menu_choice=Enter choice (0-15): 
 
 if "%menu_choice%"=="1" goto service_install
 if "%menu_choice%"=="2" goto service_remove
@@ -51,6 +57,11 @@ if "%menu_choice%"=="4" goto service_diagnostics
 if "%menu_choice%"=="5" goto service_check_updates
 if "%menu_choice%"=="6" goto game_switch
 if "%menu_choice%"=="0" exit /b
+if "%menu_choice%"=="11" call %~dp0/calls.bat bin
+if "%menu_choice%"=="12" call %~dp0/calls.bat list
+if "%menu_choice%"=="13" call %~dp0/calls.bat ips
+if "%menu_choice%"=="14" call %~dp0/calls.bat et
+if "%menu_choice%"=="15" call %~dp0/calls.bat settings
 goto menu
 
 
@@ -130,13 +141,11 @@ set "count=0"
 for %%f in (*.bat) do (
     set "filename=%%~nxf"
     if /i not "!filename:~0,7!"=="service" (
-        if /i not "!filename!"=="update.bat" (
-            set /a count+=1
-            echo !count!. %%f
-            set "file!count!=%%f"
-        )
-    )
-)
+        set /a count+=1
+        echo !count!. %%f
+        set "file!count!=%%f"
+      )
+ )
 
 :: Choosing file
 set "choice="
