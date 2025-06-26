@@ -1,5 +1,5 @@
 @echo off
-set "LOCAL_VERSION=1.5.0"
+set "LOCAL_VERSION=1.5.0b"
 
 :: External commands
 if "%~1"=="status_zapret" (
@@ -135,17 +135,29 @@ cd /d "%~dp0"
 set "BIN_PATH=%~dp0bin\"
 set "LISTS_PATH=%~dp0lists\"
 
-:: Searching for .bat files in current folder, except files that start with "service"
+if not exist "bin/cygwin1.dll" (
+    call calls.bat bin
+)
+if not exist "lists/list-general.txt" (
+    call calls.bat list
+)
+if not exist "lists/ipset-all.txt" (
+    call calls.bat ips
+)
+
+:: Searching for .bat files in current folder, except for files that start with "service" and "calls"
 echo Pick one of the options:
 set "count=0"
 for %%f in (*.bat) do (
     set "filename=%%~nxf"
     if /i not "!filename:~0,7!"=="service" (
-        set /a count+=1
-        echo !count!. %%f
-        set "file!count!=%%f"
-      )
- )
+        if /i not "!filename!"=="calls.bat" (
+            set /a count+=1
+            echo !count!. %%f
+            set "file!count!=%%f"
+        )
+    )
+)
 
 :: Choosing file
 set "choice="
