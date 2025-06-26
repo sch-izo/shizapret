@@ -39,7 +39,7 @@ echo Требуются права администратора...
 set "BIN=%~dp0bin\"
 set "LISTS=%~dp0lists\"
 
-start "shizapret: alt" /min "%BIN%winws.exe" --wf-tcp=80,443,%GameFilter% --wf-udp=443,50000-50099,0-65535,%GameFilter% ^
+start "shizapret: alt" /min "%BIN%winws.exe" --wf-tcp=80,443 --wf-udp=443,50000-50099,0-65535,%GameFilter% ^
 
 --comment Discord(Calls) --filter-udp=50000-50099 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=0x00 --dpi-desync-fake-stun=0x00 --dpi-desync-repeats=6 --new ^
 
