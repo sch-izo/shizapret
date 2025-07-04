@@ -69,7 +69,7 @@ goto menu
 :service_status
 cls
 chcp 437 > nul
-echo Checking services and tasks...
+for /f "tokens=3*" %%A in ('reg query "HKLM\System\CurrentControlSet\Services\zapret" /v zapret-discord-youtube 2^>nul') do echo Service strategy installed from "%%A %%B"
 call :test_service zapret
 call :test_service WinDivert
 
@@ -144,6 +144,8 @@ if not exist "lists/list-general.txt" (
 if not exist "lists/ipset-all.txt" (
     call calls.bat ips
 )
+
+cls
 
 :: Searching for .bat files in current folder, except for files that start with "service" and "calls"
 echo Pick one of the options:
@@ -260,6 +262,10 @@ sc delete %SRVCNAME% >nul 2>&1
 sc create %SRVCNAME% binPath= "\"%BIN_PATH%winws.exe\" %ARGS%" DisplayName= "zapret" start= auto
 sc description %SRVCNAME% "Zapret DPI bypass software"
 sc start %SRVCNAME%
+for %%F in ("!file%choice%!") do (
+    set "filename=%%~nF"
+)
+reg add "HKLM\System\CurrentControlSet\Services\zapret" /v zapret-discord-youtube /t REG_SZ /d "!filename!" /f
 
 pause
 goto menu
@@ -345,6 +351,16 @@ if !errorlevel!==0 (
     call :PrintRed "https://github.com/Flowseal/zapret-discord-youtube/issues/2512#issuecomment-2821119513"
 ) else (
     call :PrintGreen "Killer check passed"
+)
+echo:
+
+:: Intel Connectivity Network Service
+sc query | findstr /I "Intel" | findstr /I "Connectivity" | findstr /I "Network" > nul
+if !errorlevel!==0 (
+    call :PrintRed "[X] Intel Connectivity Network Service found. It conflicts with zapret"
+    call :PrintRed "https://github.com/ValdikSS/GoodbyeDPI/issues/541#issuecomment-2661670982"
+) else (
+    call :PrintGreen "Intel Connectivity check passed"
 )
 echo:
 

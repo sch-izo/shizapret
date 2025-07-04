@@ -49,7 +49,7 @@ start "shizapret: alt" /min "%BIN%winws.exe" --wf-tcp=80,443 --wf-udp=443,50000-
 
 --comment YouTube(Streaming) --filter-tcp=80 --hostlist="%LISTS%list-general.txt" --dpi-desync=fake,multisplit --dpi-desync-fooling=md5sig,hopbyhop2 --new ^
 
---filter-tcp=443 --hostlist="%LISTS%list-general.txt" --hostlist-exclude="%LISTS%list-discord.txt" --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-repeats=2 --dpi-desync-fooling=md5sig,hopbyhop2 --dpi-desync-split-seqovl-pattern="%BIN%tls_clienthello_www_google_com.bin" --new ^
+--filter-tcp=443 --hostlist="%LISTS%list-general.txt" --hostlist-exclude="%LISTS%list-discord.txt" --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-repeats=2 --dpi-desync-split-seqovl-pattern="%BIN%tls_clienthello_www_google_com.bin" --new ^
 
 --comment Cloudflare WARP(1.1.1.1, 1.0.0.1) --filter-tcp=443 --ipset-ip=162.159.36.1,162.159.46.1,2606:4700:4700::1111,2606:4700:4700::1001 --filter-l7=tls --dpi-desync=fake --dpi-desync-fake-tls=0x00 --dpi-desync-start=n2 --dpi-desync-cutoff=n3 --dpi-desync-fooling=md5sig,hopbyhop2 --new ^
 
