@@ -155,6 +155,23 @@ echo warp.plus>> lists/list-general.txt
 echo workers.dev>> lists/list-general.txt
 echo yt4.ggpht.com>> lists/list-general.txt
 echo yt3.googleusercontent.com>> lists/list-general.txt
+echo cdnjs.cloudflare.com>> lists/list-general.txt
+echo newgrounds.com>> lists/list-general.txt
+echo ngcdn.com>> lists/list-general.txt
+echo adguard.com>> lists/list-general.txt
+echo adguard-vpn.com>> lists/list-general.txt
+echo totallyacdn.com>> lists/list-general.txt
+echo whiskergalaxy.com>> lists/list-general.txt
+echo windscribe.com>> lists/list-general.txt
+echo windscribe.net>> lists/list-general.txt
+echo cloudflareclient.com>> lists/list-general.txt
+echo sndcdn.com>> lists/list-general.txt
+echo soundcloud.cloud>> lists/list-general.txt
+echo nexusmods.com>> lists/list-general.txt
+echo nexus-cdn.com>> lists/list-general.txt
+echo supporter-files.nexus-cdn.com>> lists/list-general.txt
+echo prostovpn.org>> lists/list-general.txt
+echo hitmotop.com>> lists/list-general.txt
 exit /b
 
 :et
