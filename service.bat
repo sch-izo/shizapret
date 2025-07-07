@@ -1,5 +1,5 @@
 @echo off
-set "LOCAL_VERSION=1.5.2"
+set "LOCAL_VERSION=1.5.3"
 
 :: External commands
 if "%~1"=="status_zapret" (
@@ -43,9 +43,9 @@ echo 5. Check Updates
 echo 6. Switch Game Filter (%GameFilterStatus%)
 echo 0. Exit
 echo ======shizapret========
-echo 11. Update bin Folder
-echo 12. Update lists/list-general.txt
-echo 13. Update lists/ipset-all.txt
+echo 11. Update /bin/ Folder
+echo 12. Update /lists/list-general.txt
+echo 13. Update /lists/ipset-all.txt
 echo 14. Update Everything
 echo 15. Change Settings
 set /p menu_choice=Enter choice (0-15): 
@@ -318,13 +318,24 @@ if /i "%CHOICE%"=="Y" (
     echo Extracting shizapret-%GITHUB_VERSION%.zip...
     powershell -Command "Expand-Archive 'shizapret-%GITHUB_VERSION%.zip' '%GITHUB_VERSION%'"
     del shizapret-%GITHUB_VERSION%.zip
-    call :service_remove shizapret
     cls
-    echo Updated successfully!
+    if exist "%GITHUB_VERSION%\shizapret.bat" (
+    echo Update installed into "%~dp0%GITHUB_VERSION%".
+    set "SERVICE_CHOICE="
+    set /p "SERVICE_CHOICE=Do you want to automatically remove service? (Y/N) (default: Y) "
+    if "%SERVICE_CHOICE%"=="" set "SERVICE_CHOICE=Y"
+    if /i "%SERVICE_CHOICE%"=="y" set "SERVICE_CHOICE=Y"
+    if /i "%SERVICE_CHOICE%"=="Y" (
+        call :service_remove shizapret
+    )
+    ) else (
+    call :PrintRed "Update was not installed."
+    )
 )
 
 
 if "%1"=="soft" exit /b
+cls
 pause
 goto menu
 
@@ -427,19 +438,24 @@ if "!CHOICE!"=="" set "CHOICE=Y"
 if "!CHOICE!"=="y" set "CHOICE=Y"
 
 if /i "!CHOICE!"=="Y" (
-    tasklist /FI "IMAGENAME eq Discord.exe" | findstr /I "Discord.exe" > nul
-    if !errorlevel!==0 (
-        echo Discord is running, closing...
-        taskkill /IM Discord.exe /F > nul
-        if !errorlevel! == 0 (
-            call :PrintGreen "Discord was successfully closed"
-        ) else (
-            call :PrintRed "Unable to close Discord"
+    for %%i in ("Discord.exe" "DiscordPTB.exe" "DiscordCanary.exe") do (
+        tasklist /FI "IMAGENAME eq %%i" | findstr /I "%%i" > nul
+        if !errorlevel!==0 (
+            echo %%i is running, closing...
+            taskkill /IM %%i /F > nul
+            if !errorlevel! == 0 (
+                call :PrintGreen "%%i was successfully closed"
+            ) else (
+                call :PrintRed "Unable to close %%i"
+            )
         )
     )
 
     set "discordCacheDir=%appdata%\discord"
+    set "discordPTBCacheDir=%appdata%\discordptb"
+    set "discordCanaryCacheDir=%appdata%\discordcanary"
 
+    echo Cleaning Discord cache...
     for %%d in ("Cache" "Code Cache" "GPUCache") do (
         set "dirPath=!discordCacheDir!\%%~d"
         if exist "!dirPath!" (
@@ -451,6 +467,40 @@ if /i "!CHOICE!"=="Y" (
             )
         ) else (
             call :PrintRed "!dirPath! does not exist"
+        )
+    )
+    
+    if exist "!discordPTBCacheDir!\" (
+        echo Cleaning Discord PTB cache...
+        for %%d in ("Cache" "Code Cache" "GPUCache") do (
+            set "dirPath=!discordPTBCacheDir!\%%~d"
+            if exist "!dirPath!" (
+                rd /s /q "!dirPath!"
+                if !errorlevel!==0 (
+                    call :PrintGreen "Successfully deleted !dirPath!"
+                ) else (
+                    call :PrintRed "Failed to delete !dirPath!"
+                )
+            ) else (
+                call :PrintRed "!dirPath! does not exist"
+            )
+        )
+    )
+
+    if exist "!discordCanaryCacheDir!\" (
+        echo Cleaning Discord Canary cache...
+        for %%d in ("Cache" "Code Cache" "GPUCache") do (
+            set "dirPath=!discordCanaryCacheDir!\%%~d"
+            if exist "!dirPath!" (
+                rd /s /q "!dirPath!"
+                if !errorlevel!==0 (
+                    call :PrintGreen "Successfully deleted !dirPath!"
+                ) else (
+                    call :PrintRed "Failed to delete !dirPath!"
+                )
+            ) else (
+                call :PrintRed "!dirPath! does not exist"
+            )
         )
     )
 )
