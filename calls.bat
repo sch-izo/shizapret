@@ -374,11 +374,12 @@ goto settings
 cls
 echo Current source: %IPSET_SOURCE% %ipsetdefault%
 echo ==============================
-echo 0 - Back
-echo 1 - Reset to default
+echo Enter 0 to go back
+echo Enter 1 to reset to default
+echo ==============================
 
-set "IPSET_SOURCE_INPUT=null"
-set /p IPSET_SOURCE_INPUT=Enter the new ipset-all.txt source (link, starts with https://): 
+set "IPSET_SOURCE_INPUT=0"
+set /p IPSET_SOURCE_INPUT=Enter the new ipset-all.txt source (link, starts with http(s)://): 
 
 :: static commands
 
@@ -387,8 +388,7 @@ if "%IPSET_SOURCE_INPUT%"=="1" set "IPSET_SOURCE_INPUT=%defaultipsetsource%"
 
 :: set source
 
-del /f /q params\DownloadSources\IPSetSource
-echo %IPSET_SOURCE_INPUT%>> params/DownloadSources/IPSetSource
+echo %IPSET_SOURCE_INPUT%> params/DownloadSources/IPSetSource
 set "IPSET_SOURCE=%IPSET_SOURCE_INPUT%"
 
 goto settings
@@ -398,11 +398,12 @@ goto settings
 cls
 echo Current source: %LIST_SOURCE% %listdefault%
 echo ==============================
-echo 0 - Back
-echo 1 - Reset to default
+echo Enter 0 to go back
+echo Enter 1 to reset to default
+echo ==============================
 
-set "LIST_SOURCE_INPUT=null"
-set /p LIST_SOURCE_INPUT=Enter the new list-general.txt source (link, starts with https://): 
+set "LIST_SOURCE_INPUT=0"
+set /p LIST_SOURCE_INPUT=Enter the new list-general.txt source (link, starts with http(s)://): 
 
 :: static commands
 
@@ -411,8 +412,7 @@ if "%LIST_SOURCE_INPUT%"=="1" set "LIST_SOURCE_INPUT=%defaultlistsource%"
 
 :: set source
 
-del /f /q params\DownloadSources\ListSource
-echo %LIST_SOURCE_INPUT%>> params/DownloadSources/ListSource
+echo %LIST_SOURCE_INPUT%> params/DownloadSources/ListSource
 set "LIST_SOURCE=%LIST_SOURCE_INPUT%"
 
 goto settings

@@ -31,6 +31,7 @@ if "%1"=="admin" (
 setlocal EnableDelayedExpansion
 :menu
 cls
+call :ipset_switch_status
 call :game_switch_status
 
 set "menu_choice=null"
@@ -41,6 +42,7 @@ echo 3. Check Status
 echo 4. Run Diagnostics
 echo 5. Check Updates
 echo 6. Switch Game Filter (%GameFilterStatus%)
+echo 7. Switch ipset (%IPsetStatus%)
 echo 0. Exit
 echo ======shizapret========
 echo 11. Update /bin/ Folder
@@ -56,6 +58,7 @@ if "%menu_choice%"=="3" goto service_status
 if "%menu_choice%"=="4" goto service_diagnostics
 if "%menu_choice%"=="5" goto service_check_updates
 if "%menu_choice%"=="6" goto game_switch
+if "%menu_choice%"=="7" goto ipset_switch
 if "%menu_choice%"=="0" exit /b
 if "%menu_choice%"=="11" call %~dp0/calls.bat bin
 if "%menu_choice%"=="12" call %~dp0/calls.bat list
@@ -538,6 +541,55 @@ if not exist "%gameFlagFile%" (
     echo Disabling game filter...
     del /f /q "%gameFlagFile%"
     call :PrintYellow "Restart shizapret to apply the changes."
+)
+
+pause
+goto menu
+
+:: IPSET SWITCH =======================
+:ipset_switch_status
+chcp 437 > nul
+
+findstr /R "^0\.0\.0\.0/32$" "%~dp0lists\ipset-all.txt" >nul
+if !errorlevel!==0 (
+    set "IPsetStatus=empty"
+) else (
+    set "IPsetStatus=loaded"
+)
+exit /b
+
+
+:ipset_switch
+chcp 437 > nul
+cls
+
+set "listFile=%~dp0lists\ipset-all.txt"
+set "backupFile=%listFile%.backup"
+
+findstr /R "^0\.0\.0\.0/32$" "%listFile%" >nul
+if !errorlevel!==0 (
+    echo Enabling ipset based bypass...
+
+    if exist "%backupFile%" (
+        del /f /q "%listFile%"
+        ren "%backupFile%" "ipset-all.txt"
+    ) else (
+        echo Error: no backup to restore. Update list from service menu by yourself
+    )
+
+) else (
+    echo Disabling ipset based bypass...
+
+    if not exist "%backupFile%" (
+        ren "%listFile%" "ipset-all.txt.backup"
+    ) else (
+        del /f /q "%backupFile%"
+        ren "%listFile%" "ipset-all.txt.backup"
+    )
+
+    >"%listFile%" (
+        echo 0.0.0.0/32
+    )
 )
 
 pause
