@@ -31,10 +31,13 @@ powershell -Command "Write-Host "This file is used for external commands only." 
 pause >nul
 exit /b
 
+:: ===== updater: ipset =====
+
 :ips
+call :getsources
 cls
 echo Downloading ipset-cloudflare.txt...
-powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt -Destination lists/ipset-all.txt"
+powershell -Command "Start-BitsTransfer -Source %IPSET_SOURCE% -Destination lists/ipset-all.txt"
 exit /b
 
 :bin
@@ -60,119 +63,126 @@ if exist "params/Updater/EverythingCygwin11" (
 )
 exit /b
 
+:: ===== updater: list =====
+
 :list
+call :getsources
 cls
 echo Downloading list-general.txt...
-powershell -Command "Start-BitsTransfer -Source https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt -Destination lists/list-general.txt"
-echo discord.app>> lists/list-general.txt
-echo discord.co>> lists/list-general.txt
-echo discord.com>> lists/list-general.txt
-echo discord.design>> lists/list-general.txt
-echo discord.dev>> lists/list-general.txt
-echo discord.gift>> lists/list-general.txt
-echo discord.gifts>> lists/list-general.txt
-echo discord.gg>> lists/list-general.txt
-echo discord.media>> lists/list-general.txt
-echo discord.new>> lists/list-general.txt
-echo discord.store>> lists/list-general.txt
-echo discord.status>> lists/list-general.txt
-echo discord-activities.com>> lists/list-general.txt
-echo discordactivities.com>> lists/list-general.txt
-echo discordapp.com>> lists/list-general.txt
-echo discordapp.net>> lists/list-general.txt
-echo discordcdn.com>> lists/list-general.txt
-echo discordmerch.com>> lists/list-general.txt
-echo discordpartygames.com>> lists/list-general.txt
-echo discordsays.com>> lists/list-general.txt
-echo discordsez.com>> lists/list-general.txt
-echo ggpht.com>> lists/list-general.txt
-echo googlevideo.com>> lists/list-general.txt
-echo jnn-pa.googleapis.com>> lists/list-general.txt
-echo stable.dl2.discordapp.net>> lists/list-general.txt
-echo wide-youtube.l.google.com>> lists/list-general.txt
-echo youtube-nocookie.com>> lists/list-general.txt
-echo youtube-ui.l.google.com>> lists/list-general.txt
-echo youtube.com>> lists/list-general.txt
-echo youtubeembeddedplayer.googleapis.com>> lists/list-general.txt
-echo youtubekids.com>> lists/list-general.txt
-echo youtubei.googleapis.com>> lists/list-general.txt
-echo youtu.be>> lists/list-general.txt
-echo yt-video-upload.l.google.com>> lists/list-general.txt
-echo ytimg.com>> lists/list-general.txt
-echo ytimg.l.google.com>> lists/list-general.txt
-echo frankerfacez.com>> lists/list-general.txt
-echo ffzap.com>> lists/list-general.txt
-echo betterttv.net>> lists/list-general.txt
-echo 7tv.app>> lists/list-general.txt
-echo 7tv.io>> lists/list-general.txt
-echo signin.aws.amazon.com>> lists/list-general.txt
-echo cloudfront.net>> lists/list-general.txt
-echo s3.amazonaws.com>> lists/list-general.txt
-echo awsstatic.com>> lists/list-general.txt
-echo console.aws.a2z.com>> lists/list-general.txt
-echo amazonaws.com>> lists/list-general.txt
-echo awsapps.com>> lists/list-general.txt
-echo sso.amazonaws.com>> lists/list-general.txt
-echo cloudfront.net>> lists/list-general.txt
-echo deadbydaylight.com>> lists/list-general.txt
-echo deadbydaylight.fandom.com>> lists/list-general.txt
-echo argotunnel.com>> lists/list-general.txt
-echo ipsargotunnel.com>> lists/list-general.txt
-echo ipsl.re>> lists/list-general.txt
-echo cloudflare-dns.com>> lists/list-general.txt
-echo cloudflare-ech.com>> lists/list-general.txt
-echo cloudflare-esni.com>> lists/list-general.txt
-echo cloudflare-gateway.com>> lists/list-general.txt
-echo cloudflare-quic.com>> lists/list-general.txt
-echo cloudflare.com>> lists/list-general.txt
-echo cloudflare.net>> lists/list-general.txt
-echo cloudflare.tv>> lists/list-general.txt
-echo cloudflareaccess.com>> lists/list-general.txt
-echo cloudflareapps.com>> lists/list-general.txt
-echo cloudflarebolt.com>> lists/list-general.txt
-echo cloudflareclient.com>> lists/list-general.txt
-echo cloudflareinsights.com>> lists/list-general.txt
-echo cloudflareok.com>> lists/list-general.txt
-echo cloudflarepartners.com>> lists/list-general.txt
-echo cloudflareportal.com>> lists/list-general.txt
-echo cloudflarepreview.com>> lists/list-general.txt
-echo cloudflareresolve.com>> lists/list-general.txt
-echo cloudflaressl.com>> lists/list-general.txt
-echo cloudflarestatus.com>> lists/list-general.txt
-echo cloudflarestorage.com>> lists/list-general.txt
-echo cloudflarestream.com>> lists/list-general.txt
-echo cloudflaretest.com>> lists/list-general.txt
-echo cloudflarewarp.com>> lists/list-general.txt
-echo every1dns.net>> lists/list-general.txt
-echo isbgpsafeyet.com>> lists/list-general.txt
-echo one.one.one.one>> lists/list-general.txt
-echo one.one.one>> lists/list-general.txt
-echo pacloudflare.com>> lists/list-general.txt
-echo pages.dev>> lists/list-general.txt
-echo trycloudflare.com>> lists/list-general.txt
-echo videodelivery.net>> lists/list-general.txt
-echo warp.plus>> lists/list-general.txt
-echo workers.dev>> lists/list-general.txt
-echo yt4.ggpht.com>> lists/list-general.txt
-echo yt3.googleusercontent.com>> lists/list-general.txt
-echo cdnjs.cloudflare.com>> lists/list-general.txt
-echo newgrounds.com>> lists/list-general.txt
-echo ngcdn.com>> lists/list-general.txt
-echo adguard.com>> lists/list-general.txt
-echo adguard-vpn.com>> lists/list-general.txt
-echo totallyacdn.com>> lists/list-general.txt
-echo whiskergalaxy.com>> lists/list-general.txt
-echo windscribe.com>> lists/list-general.txt
-echo windscribe.net>> lists/list-general.txt
-echo cloudflareclient.com>> lists/list-general.txt
-echo sndcdn.com>> lists/list-general.txt
-echo soundcloud.cloud>> lists/list-general.txt
-echo nexusmods.com>> lists/list-general.txt
-echo nexus-cdn.com>> lists/list-general.txt
-echo supporter-files.nexus-cdn.com>> lists/list-general.txt
-echo prostovpn.org>> lists/list-general.txt
-echo hitmotop.com>> lists/list-general.txt
+powershell -Command "Start-BitsTransfer -Source %LIST_SOURCE% -Destination lists/list-general.txt"
+>>"lists/list-general.txt" (
+    echo discord.app
+    echo discord.co
+    echo discord.com
+    echo discord.design
+    echo discord.dev
+    echo discord.gift
+    echo discord.gifts
+    echo discord.gg
+    echo discord.media
+    echo discord.new
+    echo discord.store
+    echo discord.status
+    echo discord-activities.com
+    echo discordactivities.com
+    echo discordapp.com
+    echo discordapp.net
+    echo discordcdn.com
+    echo discordmerch.com
+    echo discordpartygames.com
+    echo discordsays.com
+    echo discordsez.com
+    echo ggpht.com
+    echo googlevideo.com
+    echo jnn-pa.googleapis.com
+    echo stable.dl2.discordapp.net
+    echo wide-youtube.l.google.com
+    echo youtube-nocookie.com
+    echo youtube-ui.l.google.com
+    echo youtube.com
+    echo youtubeembeddedplayer.googleapis.com
+    echo youtubekids.com
+    echo youtubei.googleapis.com
+    echo youtu.be
+    echo yt-video-upload.l.google.com
+    echo ytimg.com
+    echo ytimg.l.google.com
+    echo frankerfacez.com
+    echo ffzap.com
+    echo betterttv.net
+    echo 7tv.app
+    echo 7tv.io
+    echo signin.aws.amazon.com
+    echo cloudfront.net
+    echo s3.amazonaws.com
+    echo awsstatic.com
+    echo console.aws.a2z.com
+    echo amazonaws.com
+    echo awsapps.com
+    echo sso.amazonaws.com
+    echo cloudfront.net
+    echo deadbydaylight.com
+    echo deadbydaylight.fandom.com
+    echo argotunnel.com
+    echo ipsargotunnel.com
+    echo ipsl.re
+    echo cloudflare-dns.com
+    echo cloudflare-ech.com
+    echo cloudflare-esni.com
+    echo cloudflare-gateway.com
+    echo cloudflare-quic.com
+    echo cloudflare.com
+    echo cloudflare.net
+    echo cloudflare.tv
+    echo cloudflareaccess.com
+    echo cloudflareapps.com
+    echo cloudflarebolt.com
+    echo cloudflareclient.com
+    echo cloudflareinsights.com
+    echo cloudflareok.com
+    echo cloudflarepartners.com
+    echo cloudflareportal.com
+    echo cloudflarepreview.com
+    echo cloudflareresolve.com
+    echo cloudflaressl.com
+    echo cloudflarestatus.com
+    echo cloudflarestorage.com
+    echo cloudflarestream.com
+    echo cloudflaretest.com
+    echo cloudflarewarp.com
+    echo every1dns.net
+    echo isbgpsafeyet.com
+    echo one.one.one.one
+    echo one.one.one
+    echo pacloudflare.com
+    echo pages.dev
+    echo trycloudflare.com
+    echo videodelivery.net
+    echo warp.plus
+    echo workers.dev
+    echo yt4.ggpht.com
+    echo yt3.googleusercontent.com
+    echo cdnjs.cloudflare.com
+    echo newgrounds.com
+    echo ngcdn.com
+    echo adguard.com
+    echo adguard-vpn.com
+    echo totallyacdn.com
+    echo whiskergalaxy.com
+    echo windscribe.com
+    echo windscribe.net
+    echo cloudflareclient.com
+    echo sndcdn.com
+    echo soundcloud.cloud
+    echo nexusmods.com
+    echo nexus-cdn.com
+    echo supporter-files.nexus-cdn.com
+    echo prostovpn.org
+    echo hitmotop.com
+)
 exit /b
+
+:: ===== updater: everything =====
 
 :et
 if exist "params/Updater/EverythingWinws1" (
@@ -204,10 +214,16 @@ if exist "params/Updater/EverythingList1" (
     call :list
 )
 
+:: ===== settings =====
+
 :settings
 setlocal EnableDelayedExpansion
 cd /d "%~dp0"
 cls
+
+:: check settings
+
+call :getsources
 
 if not exist "params/AutoUpdater/AutoUpdate1" (
     set "autoupdate=Disabled"
@@ -251,6 +267,12 @@ if not exist "params/Updater/EverythingList1" (
     set "general=Enabled"
 )
 
+set "listdefault="
+if "%LIST_SOURCE%"=="%defaultlistsource%" set "listdefault=(Default)"
+
+set "ipsetdefault="
+if "%IPSET_SOURCE%"=="%defaultipsetsource%" set "ipsetdefault=(Default)"
+
 set "settings_choice=null"
 echo =======Settings========
 echo 1. Update on start: %autoupdate%
@@ -260,8 +282,10 @@ echo 4. Update WinDivert64.sys: %windivert64%
 echo 5. Update winws.exe: %winws%
 echo 6. Update ipset-all.txt: %ipset%
 echo 7. Update list-general.txt %general%
+echo 8. list-general.txt Source: %LIST_SOURCE% %listdefault%
+echo 9. ipset-all Source: %IPSET_SOURCE% %ipsetdefault%
 echo 0. Back
-set /p settings_choice=Switch Setting: 
+set /p settings_choice=Change Setting: 
 
 if "%settings_choice%"=="1" goto autoupdate
 if "%settings_choice%"=="2" goto cygwin1
@@ -270,6 +294,8 @@ if "%settings_choice%"=="4" goto windivert64
 if "%settings_choice%"=="5" goto winws
 if "%settings_choice%"=="6" goto ipset
 if "%settings_choice%"=="7" goto general
+if "%settings_choice%"=="8" goto setlistsource
+if "%settings_choice%"=="9" goto setipsetsource
 if "%settings_choice%"=="0" exit /b
 goto settings
 
@@ -342,3 +368,61 @@ if not exist "params/Updater/EverythingList1" (
 )
 
 goto settings
+
+:setipsetsource
+
+cls
+echo Current source: %IPSET_SOURCE% %ipsetdefault%
+echo ==============================
+echo 0 - Back
+echo 1 - Reset to default
+
+set "IPSET_SOURCE_INPUT=null"
+set /p IPSET_SOURCE_INPUT=Enter the new ipset-all.txt source (link, starts with https://): 
+
+:: static commands
+
+if "%IPSET_SOURCE_INPUT%"=="0" goto settings
+if "%IPSET_SOURCE_INPUT%"=="1" set "IPSET_SOURCE_INPUT=%defaultipsetsource%"
+
+:: set source
+
+del /f /q params\DownloadSources\IPSetSource
+echo %IPSET_SOURCE_INPUT%>> params/DownloadSources/IPSetSource
+set "IPSET_SOURCE=%IPSET_SOURCE_INPUT%"
+
+goto settings
+
+:setlistsource
+
+cls
+echo Current source: %LIST_SOURCE% %listdefault%
+echo ==============================
+echo 0 - Back
+echo 1 - Reset to default
+
+set "LIST_SOURCE_INPUT=null"
+set /p LIST_SOURCE_INPUT=Enter the new list-general.txt source (link, starts with https://): 
+
+:: static commands
+
+if "%LIST_SOURCE_INPUT%"=="0" goto settings
+if "%LIST_SOURCE_INPUT%"=="1" set "LIST_SOURCE_INPUT=%defaultlistsource%"
+
+:: set source
+
+del /f /q params\DownloadSources\ListSource
+echo %LIST_SOURCE_INPUT%>> params/DownloadSources/ListSource
+set "LIST_SOURCE=%LIST_SOURCE_INPUT%"
+
+goto settings
+
+:: ===== function: get download source =====
+
+:getsources
+
+set "defaultipsetsource=https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt"
+set "defaultlistsource=https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt"
+set /p IPSET_SOURCE=<%~dp0params/DownloadSources/IPSetSource
+set /p LIST_SOURCE=<%~dp0params/DownloadSources/ListSource
+exit /b
