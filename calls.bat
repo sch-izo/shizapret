@@ -267,6 +267,18 @@ if not exist "params/Updater/EverythingList1" (
     set "general=Enabled"
 )
 
+echo Receiving default download sources...
+
+if not defined defaultipsetsource (
+for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/IPSetSource" -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultipsetsource=%%A"
+)
+
+if not defined defaultlistsource (
+for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/ListSource" -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultlistsource=%%A"
+)
+
+cls
+
 set "listdefault="
 if "%LIST_SOURCE%"=="%defaultlistsource%" set "listdefault=(Default)"
 
@@ -274,6 +286,14 @@ set "ipsetdefault="
 if "%IPSET_SOURCE%"=="%defaultipsetsource%" set "ipsetdefault=(Default)"
 
 set "settings_choice=null"
+if not defined defaultipsetsource (
+    set "defaultipsetsource=https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt"
+    echo Could not receive the default IP Set source! Fell back to "%defaultipsetsource%".
+)
+if not defined defaultlistsource (
+    set "defaultlistsource=https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt"
+    echo Could not receive the default list source! Fell back to "%defaultlistsource%".
+)
 echo =======Settings========
 echo 1. Update on start: %autoupdate%
 echo 2. Update cygwin1.dll: %cygwin1%
@@ -371,6 +391,17 @@ goto settings
 
 :setipsetsource
 
+echo Receiving the default IP Set download source...
+
+if not defined defaultipsetsource (
+for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/IPSetSource" -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultipsetsource=%%A"
+)
+
+if not defined defaultipsetsource (
+    set "defaultipsetsource=https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt"
+    echo Could not receive the default IP Set source! Fell back to "%defaultipsetsource%".
+)
+
 cls
 echo Current source: %IPSET_SOURCE% %ipsetdefault%
 echo ==============================
@@ -394,6 +425,17 @@ set "IPSET_SOURCE=%IPSET_SOURCE_INPUT%"
 goto settings
 
 :setlistsource
+
+echo Receiving the default list download source...
+
+if not defined defaultlistsource (
+for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/ListSource" -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultlistsource=%%A"
+)
+
+if not defined defaultlistsource (
+    set "defaultlistsource=https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt"
+    echo Could not receive the default list source! Fell back to "%defaultlistsource%".
+)
 
 cls
 echo Current source: %LIST_SOURCE% %listdefault%
@@ -421,8 +463,6 @@ goto settings
 
 :getsources
 
-set "defaultipsetsource=https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt"
-set "defaultlistsource=https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt"
 set /p IPSET_SOURCE=<%~dp0params/DownloadSources/IPSetSource
 set /p LIST_SOURCE=<%~dp0params/DownloadSources/ListSource
 exit /b
