@@ -27,9 +27,11 @@ if exist "params/AutoUpdater/AutoUpdate1" (
     call calls.bat et
 )
 
+call service.bat check_updates
 
 set "BIN=%~dp0bin\"
 set "LISTS=%~dp0lists\"
+cd /d %BIN%
 
 start "shizapret: old" /min "%BIN%winws.exe" --wf-tcp=80,443 --wf-udp=443,50000-50099,0-65535 ^
 

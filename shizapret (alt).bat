@@ -11,8 +11,6 @@ cd /d "%~dp0"
 
 call service.bat status_zapret
 
-call service.bat check_updates
-
 call service.bat load_game_filter
 
 if not exist "bin/cygwin1.dll" (
@@ -33,11 +31,14 @@ if exist "params/AutoUpdater/AutoUpdate1" (
 
 cls
 
+call service.bat check_updates
+
 chcp 65001 >nul
 echo Требуются права администратора...
 
 set "BIN=%~dp0bin\"
 set "LISTS=%~dp0lists\"
+cd /d %BIN%
 
 start "shizapret: alt" /min "%BIN%winws.exe" --wf-tcp=80,443 --wf-udp=443,50000-50099,0-65535,%GameFilter% ^
 

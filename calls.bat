@@ -40,6 +40,8 @@ echo Downloading ipset-cloudflare.txt...
 powershell -Command "Start-BitsTransfer -Source %IPSET_SOURCE% -Destination lists/ipset-all.txt"
 exit /b
 
+:: ===== updater: bin =====
+
 :bin
 if exist "params/Updater/EverythingWinws1" (
     cls
@@ -185,26 +187,8 @@ exit /b
 :: ===== updater: everything =====
 
 :et
-if exist "params/Updater/EverythingWinws1" (
-    cls
-    echo Downloading winws.exe...
-    powershell -Command "Start-BitsTransfer -Source https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/winws.exe -Destination bin"
-)
-if exist "params/Updater/EverythingWinDivert1" (
-    cls
-    echo Downloading WinDivert.dll...
-    powershell -Command "Start-BitsTransfer -Source https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert.dll -Destination bin"
-)
-if exist "params/Updater/EverythingWinDivert641" (
-    cls
-    echo Downloading WinDivert64.sys...
-    powershell -Command "Start-BitsTransfer -Source https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert64.sys -Destination bin"
-)
-if exist "params/Updater/EverythingCygwin11" (
-    cls
-    echo Downloading cygwin1.dll...
-    powershell -Command "Start-BitsTransfer -Source https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/cygwin1.dll -Destination bin"
-)
+cls
+call :bin
 if exist "params/Updater/EverythingIPSet1" (
     cls
     call :ips
