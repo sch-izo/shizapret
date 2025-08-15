@@ -72,11 +72,13 @@
 
   Почти во всех браузерах настройки DNS находятся в настройках приватности. Я рекомендую эти DNS-сервера:
   
-  Quad9: 9.9.9.9 (приватность)
+  Quad9: `9.9.9.9` | `https://dns.quad9.net/dns-query`
 
-  Cloudflare: 1.1.1.1
+  Cloudflare: `1.1.1.1` | `https://cloudflare-dns.com/dns-query`
 
-  Google: 8.8.8.8
+  Google: `8.8.8.8` | `https://dns.google/dns-query`
+
+  Mullvad (не работает без включенного обхода): `194.242.2.2` | `https://dns.mullvad.net/dns-query`
 
 - **Попробуйте альтернативные .bat файлы**
 
