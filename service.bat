@@ -455,9 +455,8 @@ echo:
 
 :: DNS
 set "dnsfound=0"
-for /f "delims=" %%a in ('powershell -Command "Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled -eq $true} | ForEach-Object {$_.DNSServerSearchOrder} | Where-Object {$_ -match '^192\.168\
-.'} | Measure-Object | Select-Object -ExpandProperty Count"') do (
-  if %%a gtr 0 (
+for /f "delims=" %%a in ('powershell -Command "Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled -eq $true} | ForEach-Object {$_.DNSServerSearchOrder} | Where-Object {$_ -match '^192\.168\.'} | Measure-Object | Select-Object -ExpandProperty Count"') do (
+    if %%a gtr 0 (
         set "dnsfound=1"
     )
 )
