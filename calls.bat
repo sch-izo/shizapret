@@ -197,6 +197,7 @@ if exist "params/Updater/EverythingList1" (
     cls
     call :list
 )
+exit /b
 
 :: ===== settings =====
 
