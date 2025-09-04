@@ -55,7 +55,8 @@ echo 12. Update /lists/list-general.txt
 echo 13. Update /lists/ipset-all.txt
 echo 14. Update Everything
 echo 15. Change Settings
-set /p menu_choice=Enter choice (0-15): 
+echo 16. Switch Game Filter for TCP (Chats, Profile Pictures, etc.) (%GameFilterTCPStatus%)
+set /p menu_choice=Enter choice (0-16): 
 
 if "%menu_choice%"=="1" goto service_install
 if "%menu_choice%"=="2" goto service_remove
@@ -70,6 +71,7 @@ if "%menu_choice%"=="12" call %~dp0/calls.bat list
 if "%menu_choice%"=="13" call %~dp0/calls.bat ips
 if "%menu_choice%"=="14" call %~dp0/calls.bat et
 if "%menu_choice%"=="15" call %~dp0/calls.bat settings
+if "%menu_choice%"=="16" goto game_switch_tcp
 goto menu
 
 
@@ -249,7 +251,9 @@ for /f "tokens=*" %%a in ('type "!selectedFile!"') do (
                     )
                 ) else if "!arg:~0,12!" EQU "%%GameFilter%%" (
                     set "arg=%GameFilter%"
-                )
+                ) else if "!arg:~0,16!" EQU "%%GameFilterTCP%%" (
+                    set "arg=%GameFilterTCP%"
+                ) 
 
                 if !mergeargs!==1 (
                     set "temp_args=!temp_args!,!arg!"
@@ -657,6 +661,16 @@ if exist "%gameFlagFile%" (
     set "GameFilterStatus=disabled"
     set "GameFilter=12"
 )
+
+set "gameTCPFlagFile=%~dp0bin\game_filtertcp.enabled"
+
+if exist "%gameTCPFlagFile%" (
+    set "GameFilterTCPStatus=enabled"
+    set "GameFilterTCP=1024-65535"
+) else (
+    set "GameFilterTCPStatus=disabled"
+    set "GameFilterTCP=12"
+)
 exit /b
 
 
@@ -676,6 +690,24 @@ if not exist "%gameFlagFile%" (
 
 pause
 goto menu
+
+:game_switch_tcp
+chcp 437 > nul
+cls
+
+if not exist "%gameTCPFlagFile%" (
+    echo Enabling game filter for TCP...
+    echo ENABLED > "%gameTCPFlagFile%"
+    call :PrintYellow "Restart shizapret to apply the changes."
+) else (
+    echo Disabling game filter for TCP...
+    del /f /q "%gameTCPFlagFile%"
+    call :PrintYellow "Restart shizapret to apply the changes."
+)
+
+pause
+goto menu
+
 
 :: IPSET SWITCH =======================
 :ipset_switch_status
