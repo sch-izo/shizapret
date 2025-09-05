@@ -14,19 +14,19 @@ call service.bat status_zapret
 call service.bat load_game_filter
 
 if not exist "bin/cygwin1.dll" (
-    call calls.bat bin
+    call service.bat bin
 )
 
 if not exist "lists/list-general.txt" (
-    call calls.bat list
+    call service.bat list
 )
 
 if not exist "lists/ipset-all.txt" (
-    call calls.bat ips
+    call service.bat ips
 )
 
 if exist "params/AutoUpdater/AutoUpdate1" (
-    call calls.bat et
+    call service.bat et
 )
 
 cls
