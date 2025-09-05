@@ -82,7 +82,10 @@ chcp 437 > nul
 
 sc query "zapret" >nul 2>&1
 if !errorlevel!==0 (
-    for /f "tokens=2*" %%A in ('reg query "HKLM\System\CurrentControlSet\Services\zapret" /v zapret-discord-youtube 2^>nul') do echo Service strategy installed from "%%B"
+    for /f "tokens=2*" %%A in ('reg query "HKLM\System\CurrentControlSet\Services\zapret" /v shizapret 2^>nul') do echo Service strategy installed from '%%B'
+    if !errorlevel!==0 (
+        for /f "tokens=2*" %%A in ('reg query "HKLM\System\CurrentControlSet\Services\zapret" /v zapret-discord-youtube 2^>nul') do call :PrintYellow "Service strategy installed from '%%B' using zapret-discord-youtube or an older version of shizapret."
+    )
 )
 
 call :test_service zapret
@@ -297,7 +300,7 @@ sc start %SRVCNAME%
 for %%F in ("!file%choice%!") do (
     set "filename=%%~nF"
 )
-reg add "HKLM\System\CurrentControlSet\Services\zapret" /v zapret-discord-youtube /t REG_SZ /d "!filename!" /f
+reg add "HKLM\System\CurrentControlSet\Services\zapret" /v shizapret /t REG_SZ /d "!filename!" /f
 
 pause
 goto menu
