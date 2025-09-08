@@ -343,8 +343,8 @@ for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri \"%GITHUB
 
 :: Error handling
 if not defined GITHUB_VERSION (
-    echo Warning: failed to fetch the latest version. Check your internet connection. This warning does not affect the operation of zapret
-    pause
+    echo Failed to fetch the latest version. This does not affect the operation of shizapret.
+    timeout /T 9
     if "%1"=="soft" exit 
     goto menu
 )
@@ -494,6 +494,21 @@ if !dnsfound!==1 (
     call :PrintYellow "Provider's DNS servers are probably automatically used, which may affect zapret. It is recommended to install well-known DNS servers and setup DoH"
 ) else (
     call :PrintGreen "DNS check passed"
+)
+echo:
+
+:: Secure DNS
+set "dohfound=0"
+for /f "delims=" %%a in ('powershell -Command "Get-ChildItem -Recurse -Path 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' | Get-ItemProperty | Where-Object { $_.DohFlags -gt 0 } | Measure-Object | Select-Object -ExpandProperty Count"') do (
+    if %%a gtr 0 (
+        set "dohfound=1"
+    )
+)
+if !dohfound!==0 (
+    call :PrintYellow "[?] Make sure you configured secure DNS in a browser with a non-default DNS service provider."
+    call :PrintYellow "If you use Windows 11, you can configure encrypted DNS in the Settings app to suppress this warning"
+) else (
+    call :PrintGreen "Secure DNS check passed"
 )
 echo:
 
