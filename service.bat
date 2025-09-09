@@ -1170,7 +1170,7 @@ for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://
 )
 
 if not defined defaultipsetsource (
-    set "https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt"
+    set "defaultipsetsource=https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/ipset-all.txt"
     echo Could not receive the default IP Set source! Fell back to "%defaultipsetsource%".
 )
 
