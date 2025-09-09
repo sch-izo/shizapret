@@ -820,7 +820,7 @@ exit /b
 cd /d "%~dp0"
 call :getsources
 cls
-echo Downloading ipset-cloudflare.txt...
+echo Downloading ipset-all.txt...
 powershell -Command "Start-BitsTransfer -Source %IPSET_SOURCE% -Destination lists/ipset-all.txt"
 goto menu
 
@@ -1059,7 +1059,7 @@ if "%IPSET_SOURCE%"=="%defaultipsetsource%" set "ipsetdefault=(Default)"
 
 set "settings_choice=null"
 if not defined defaultipsetsource (
-    set "defaultipsetsource=https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt"
+    set "defaultipsetsource=https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/ipset-all.txt"
     echo Could not receive the default IP Set source! Fell back to "%defaultipsetsource%".
 )
 if not defined defaultlistsource (
@@ -1170,7 +1170,7 @@ for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://
 )
 
 if not defined defaultipsetsource (
-    set "defaultipsetsource=https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt"
+    set "https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-cloudflare.txt"
     echo Could not receive the default IP Set source! Fell back to "%defaultipsetsource%".
 )
 
