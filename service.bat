@@ -23,37 +23,31 @@ if "%~1"=="load_game_filter" (
     exit /b
 )
 
+if "%~1"=="list" (
+    call :list ext
+    exit /b
+)
+
+if "%~1"=="ips" (
+    call :ips ext
+    exit /b
+)
+
+if "%~1"=="bin" (
+    call :bin ext
+    exit /b
+)
+
+if "%~1"=="et" (
+    call :et ext
+    exit /b
+)
 
 if "%1"=="admin" (
     echo Started with admin rights
 ) else (
     echo Requesting admin rights...
     powershell -Command "Start-Process 'cmd.exe' -ArgumentList '/c \"\"%~f0\" admin\"' -Verb RunAs"
-    exit /b
-)
-
-if "%~1"=="list" (
-    call :list
-    exit /b
-)
-
-if "%~1"=="ips" (
-    call :ips
-    exit /b
-)
-
-if "%~1"=="bin" (
-    call :bin
-    exit /b
-)
-
-if "%~1"=="et" (
-    call :et
-    exit /b
-)
-
-if "%~1"=="settings" (
-    call :settings
     exit /b
 )
 
@@ -65,6 +59,11 @@ call :ipset_switch_status
 call :game_switch_status
 
 set "menu_choice=null"
+
+if "%~1"=="settings" (
+    call :settings
+    exit /b
+)
 echo v!LOCAL_VERSION!
 echo =========Menu==========
 echo 1. Install Service
@@ -848,6 +847,8 @@ call :getsources
 cls
 echo Downloading ipset-all.txt...
 powershell -Command "Start-BitsTransfer -Source %IPSET_SOURCE% -Destination lists/ipset-all.txt"
+if "%~1"=="ext" exit /b
+pause
 goto menu
 
 :: ===== updater: bin =====
@@ -874,6 +875,8 @@ if exist "params/Updater/EverythingCygwin11" (
     echo Downloading cygwin1.dll...
     powershell -Command "Start-BitsTransfer -Source https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/cygwin1.dll -Destination bin"
 )
+if "%~1"=="ext" exit /b
+pause
 goto menu
 
 :: ===== updater: list =====
@@ -994,7 +997,9 @@ powershell -Command "Start-BitsTransfer -Source %LIST_SOURCE% -Destination lists
     echo prostovpn.org
     echo hitmotop.com
 )
-goto menu
+if "%~1"=="ext" exit /b
+pause
+exit /b
 
 :: ===== updater: everything =====
 
@@ -1010,6 +1015,7 @@ if exist "params/Updater/EverythingList1" (
     cls
     call :list
 )
+pause
 goto menu
 
 :: ===== settings =====
