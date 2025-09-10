@@ -64,7 +64,8 @@ if "%~1"=="settings" (
     call :settings
     exit /b
 )
-echo v!LOCAL_VERSION!
+echo =======================
+echo =       v!LOCAL_VERSION!        =
 echo =========Menu==========
 echo 1. Install Service
 echo 2. Remove Services
@@ -845,8 +846,7 @@ exit /b
 cd /d "%~dp0"
 call :getsources
 cls
-echo Downloading ipset-all.txt...
-powershell -Command "Start-BitsTransfer -Source %IPSET_SOURCE% -Destination lists/ipset-all.txt"
+call :downloadfile "%IPSET_SOURCE%" "lists/ipset-all.txt" "ipset-all.txt"
 if "%~1"=="ext" exit /b
 pause
 goto menu
@@ -857,23 +857,19 @@ goto menu
 cd /d "%~dp0"
 if exist "params/Updater/EverythingWinws1" (
     cls
-    echo Downloading winws.exe...
-    powershell -Command "Start-BitsTransfer -Source https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/winws.exe -Destination bin"
+    call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/winws.exe" "bin" "winws.exe"
 )
 if exist "params/Updater/EverythingWinDivert1" (
     cls
-    echo Downloading WinDivert.dll...
-    powershell -Command "Start-BitsTransfer -Source https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert.dll -Destination bin"
+    call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert.dll" "bin" "WinDivert.dll"
 )
 if exist "params/Updater/EverythingWinDivert641" (
     cls
-    echo Downloading WinDivert64.sys...
-    powershell -Command "Start-BitsTransfer -Source https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert64.sys -Destination bin"
+    call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert64.sys" "bin" "WinDivert64.sys"
 )
 if exist "params/Updater/EverythingCygwin11" (
     cls
-    echo Downloading cygwin1.dll...
-    powershell -Command "Start-BitsTransfer -Source https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/cygwin1.dll -Destination bin"
+    call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/cygwin1.dll" "bin" "cygwin1.dll"
 )
 if "%~1"=="ext" exit /b
 pause
@@ -885,8 +881,7 @@ goto menu
 cd /d "%~dp0"
 call :getsources
 cls
-echo Downloading list-general.txt...
-powershell -Command "Start-BitsTransfer -Source %LIST_SOURCE% -Destination lists/list-general.txt"
+call :downloadfile "%LIST_SOURCE%" "bin" "list-general.txt"
 >>"lists/list-general.txt" (
     echo discord.app
     echo discord.co
@@ -999,7 +994,7 @@ powershell -Command "Start-BitsTransfer -Source %LIST_SOURCE% -Destination lists
 )
 if "%~1"=="ext" exit /b
 pause
-exit /b
+goto menu
 
 :: ===== updater: everything =====
 
@@ -1111,86 +1106,24 @@ echo 9. ipset-all Source: %IPSET_SOURCE% %ipsetdefault%
 echo 0. Back
 set /p settings_choice=Change Setting: 
 
-if "%settings_choice%"=="1" goto autoupdate
-if "%settings_choice%"=="2" goto cygwin1
-if "%settings_choice%"=="3" goto windivert
-if "%settings_choice%"=="4" goto windivert64
-if "%settings_choice%"=="5" goto winws
-if "%settings_choice%"=="6" goto ipset
-if "%settings_choice%"=="7" goto general
+if "%settings_choice%"=="1" call :switchsetting "params\AutoUpdater\AutoUpdate1"
+if "%settings_choice%"=="2" call :switchsetting "params\Updater\EverythingCygwin11"
+if "%settings_choice%"=="3" call :switchsetting "params\Updater\EverythingWinDivert1"
+if "%settings_choice%"=="4" call :switchsetting "params\Updater\EverythingWinDivert641"
+if "%settings_choice%"=="5" call :switchsetting "params\Updater\EverythingWinws1"
+if "%settings_choice%"=="6" call :switchsetting "params\Updater\EverythingIPSet1"
+if "%settings_choice%"=="7" call :switchsetting "params\Updater\EverythingList1"
 if "%settings_choice%"=="8" goto setlistsource
 if "%settings_choice%"=="9" goto setipsetsource
 if "%settings_choice%"=="0" goto menu
 goto settings
 
-:autoupdate
-
-if not exist "params/AutoUpdater/AutoUpdate1" (
-    echo ENABLED > "params/AutoUpdater/AutoUpdate1"
+:switchsetting
+if not exist "%~1" (
+    echo ENABLED > "%~1"
 ) else (
-    del /f /q "params\AutoUpdater\AutoUpdate1"
+    del /f /q "%~1"
 )
-
-goto settings
-
-:cygwin1
-
-if not exist "params/Updater/EverythingCygwin11" (
-    echo ENABLED > "params/Updater/EverythingCygwin11"
-) else (
-    del /f /q "params\Updater\EverythingCygwin11"
-)
-
-goto settings
-
-:windivert
-
-if not exist "params/Updater/EverythingWinDivert1" (
-    echo ENABLED > "params/Updater/EverythingWinDivert1"
-) else (
-    del /f /q "params\Updater\EverythingWinDivert1"
-)
-
-goto settings
-
-:windivert64
-
-if not exist "params/Updater/EverythingWinDivert641" (
-    echo ENABLED > "params/Updater/EverythingWinDivert641"
-) else (
-    del /f /q "params\Updater\EverythingWinDivert641"
-)
-
-goto settings
-
-:winws
-
-if not exist "params/Updater/EverythingWinws1" (
-    echo ENABLED > "params/Updater/EverythingWinws1"
-) else (
-    del /f /q "params\Updater\EverythingWinws1"
-)
-
-goto settings
-
-:ipset
-
-if not exist "params/Updater/EverythingIPSet1" (
-    echo ENABLED > "params/Updater/EverythingIPSet1"
-) else (
-    del /f /q "params\Updater\EverythingIPSet1"
-)
-
-goto settings
-
-:general
-
-if not exist "params/Updater/EverythingList1" (
-    echo ENABLED > "params/Updater/EverythingList1"
-) else (
-    del /f /q "params\Updater\EverythingList1"
-)
-
 goto settings
 
 :setipsetsource
@@ -1263,10 +1196,22 @@ set "LIST_SOURCE=%LIST_SOURCE_INPUT%"
 
 goto settings
 
-:: ===== function: get download source =====
+:: ===== function: get download sources =====
 
 :getsources
 
 set /p IPSET_SOURCE=<%~dp0params/DownloadSources/IPSetSource
 set /p LIST_SOURCE=<%~dp0params/DownloadSources/ListSource
+exit /b
+
+:: ===== function: download file =====
+
+:downloadfile
+
+:: call :downloadfile (uri) (destination) (name)
+:: call :downloadfile "github.com/example.txt" "bin/example.bin" "Example" 
+
+echo Downloading %~3...
+echo Source: %~1
+powershell -Command "Start-BitsTransfer -Source \"%~1\" -Destination \"%~2\""
 exit /b
