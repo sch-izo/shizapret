@@ -881,7 +881,7 @@ goto menu
 cd /d "%~dp0"
 call :getsources
 cls
-call :downloadfile "%LIST_SOURCE%" "bin" "list-general.txt"
+call :downloadfile "%LIST_SOURCE%" "lists\list-general.txt" "list-general.txt"
 >>"lists/list-general.txt" (
     echo discord.app
     echo discord.co
