@@ -4,6 +4,7 @@ set "LOCAL_VERSION=1.6.2"
 :: External commands
 if "%~1"=="status_zapret" (
     call :test_service zapret soft
+    call :tcp_enable
     exit /b
 )
 
@@ -64,6 +65,7 @@ call :ipset_switch_status
 call :game_switch_status
 
 set "menu_choice=null"
+echo v!LOCAL_VERSION!
 echo =========Menu==========
 echo 1. Install Service
 echo 2. Remove Services
@@ -97,6 +99,11 @@ if "%menu_choice%"=="14" goto et
 if "%menu_choice%"=="15" goto settings
 if "%menu_choice%"=="16" goto game_switch_tcp
 goto menu
+
+:: TCP ENABLE ==========================
+:tcp_enable
+netsh interface tcp show global | findstr /i "timestamps" | findstr /i "enabled" > nul || netsh interface tcp set global timestamps=enabled > nul 2>&1
+exit /b
 
 
 :: STATUS ==============================
@@ -239,6 +246,7 @@ set QUOTE="
 
 for /f "tokens=*" %%a in ('type "!selectedFile!"') do (
     set "line=%%a"
+    call set "line=%%line:^!=EXCL_MARK%%"
 
     echo !line! | findstr /i "%BIN%winws.exe" >nul
     if not errorlevel 1 (
@@ -310,13 +318,16 @@ for /f "tokens=*" %%a in ('type "!selectedFile!"') do (
 )
 
 :: Creating service with parsed args
+call :tcp_enable
+
 set ARGS=%args%
+call set "ARGS=%%ARGS:EXCL_MARK=^!%%"
 echo Final args: !ARGS!
 set SRVCNAME=zapret
 
 net stop %SRVCNAME% >nul 2>&1
 sc delete %SRVCNAME% >nul 2>&1
-sc create %SRVCNAME% binPath= "\"%BIN_PATH%winws.exe\" %ARGS%" DisplayName= "zapret" start= auto
+sc create %SRVCNAME% binPath= "\"%BIN_PATH%winws.exe\" !ARGS!" DisplayName= "zapret" start= auto
 sc description %SRVCNAME% "Zapret DPI bypass software"
 sc start %SRVCNAME%
 for %%F in ("!file%choice%!") do (
@@ -409,6 +420,21 @@ if !errorlevel!==0 (
     call :PrintGreen "Base Filtering Engine check passed"
 ) else (
     call :PrintRed "[X] Base Filtering Engine is not running. This service is required for zapret to work"
+)
+echo:
+
+:: TCP timestamps check
+netsh interface tcp show global | findstr /i "timestamps" | findstr /i "enabled" > nul
+if !errorlevel!==0 (
+    call :PrintGreen "TCP timestamps check passed"
+) else (
+    call :PrintYellow "[?] TCP timestamps are disabled. Enabling timestamps..."
+    netsh interface tcp set global timestamps=enabled > nul 2>&1
+    if !errorlevel!==0 (
+        call :PrintGreen "TCP timestamps successfully enabled"
+    ) else (
+        call :PrintRed "[X] Failed to enable TCP timestamps"
+    )
 )
 echo:
 
@@ -505,8 +531,8 @@ for /f "delims=" %%a in ('powershell -Command "Get-ChildItem -Recurse -Path 'HKL
     )
 )
 if !dohfound!==0 (
-    call :PrintYellow "[?] Make sure you configured secure DNS in a browser with a non-default DNS service provider."
-    call :PrintYellow "If you use Windows 11, you can configure encrypted DNS in the Settings app to suppress this warning"
+    call :PrintYellow "[?] Make sure you have configured secure DNS in a browser with a non-default DNS service provider."
+    call :PrintYellow "If you use Windows 11, you can configure encrypted DNS in the Settings to hide this warning"
 ) else (
     call :PrintGreen "Secure DNS check passed"
 )
@@ -753,7 +779,7 @@ goto menu
 :ipset_switch_status
 chcp 437 > nul
 
-findstr /R "^0\.0\.0\.0/32$" "%~dp0lists\ipset-all.txt" >nul
+findstr /R "^203\.0\.113\.113/32$" "%~dp0lists\ipset-all.txt" >nul
 if !errorlevel!==0 (
     set "IPsetStatus=empty"
 ) else (
@@ -769,7 +795,7 @@ cls
 set "listFile=%~dp0lists\ipset-all.txt"
 set "backupFile=%listFile%.backup"
 
-findstr /R "^0\.0\.0\.0/32$" "%listFile%" >nul
+findstr /R "^203\.0\.113\.113/32$" "%listFile%" >nul
 if !errorlevel!==0 (
     echo Enabling ipset based bypass...
 
@@ -791,7 +817,7 @@ if !errorlevel!==0 (
     )
 
     >"%listFile%" (
-        echo 0.0.0.0/32
+        echo 203.0.113.113/32
     )
 )
 
