@@ -576,6 +576,7 @@ if !winws_running! neq 0 if !windivert_running!==0 (
         ) else (
             call :PrintYellow "[?] Attempting to delete WinDivert again..."
 
+            net stop "WinDivert" >nul 2>&1
             sc delete "WinDivert" >nul 2>&1
             sc query "WinDivert" >nul 2>&1
             if !errorlevel! neq 0 (
@@ -593,6 +594,8 @@ if !winws_running! neq 0 if !windivert_running!==0 (
 
 :: Conflicting bypasses
 set "conflicting_services=GoodbyeDPI discordfix_zapret winws1 winws2"
+set "found_any_conflict=0"
+set "found_conflicts="
 
 for %%s in (!conflicting_services!) do (
     sc query "%%s" >nul 2>&1
