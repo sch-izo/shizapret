@@ -542,7 +542,7 @@ echo:
 tasklist /FI "IMAGENAME eq winws.exe" | find /I "winws.exe" > nul
 set "winws_running=!errorlevel!"
 
-sc query WinDidvert | findstr /I "RUNNING STOP_PENDING" > nul
+sc query "WinDivert" | findstr /I "RUNNING STOP_PENDING" > nul
 set "windivert_running=!errorlevel!"
 
 if !winws_running! neq 0 if !windivert_running!==0 (
@@ -841,7 +841,7 @@ exit /b
 powershell -Command "Write-Host \"%~1\" -ForegroundColor Yellow"
 exit /b
 
-:: shizapret
+:: ===== shizapret =====
 
 :: ===== updater: ipset =====
 
