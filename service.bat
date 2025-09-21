@@ -380,8 +380,7 @@ if /i "%CHOICE%"=="y" set "CHOICE=Y"
 if /i "%CHOICE%"=="Y" (
     cd /d "%~dp0"
     cls
-    echo Downloading shizapret-%GITHUB_VERSION%.zip...
-    powershell -Command "Start-BitsTransfer -Source %GITHUB_DOWNLOAD_URL%%GITHUB_VERSION%.zip"
+    call :downloadfile "%GITHUB_DOWNLOAD_URL%%GITHUB_VERSION%.zip" "%~dp0" "shizapret-%GITHUB_VERSION%.zip"
     cls
     echo Extracting shizapret-%GITHUB_VERSION%.zip...
     powershell -Command "Expand-Archive 'shizapret-%GITHUB_VERSION%.zip' '%GITHUB_VERSION%'"
