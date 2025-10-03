@@ -862,14 +862,17 @@ cd /d "%~dp0"
 if exist "params/Updater/EverythingWinws1" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/winws.exe" "bin" "winws.exe"
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/winws.md5" "%~dp0bin/winws.exe" "winws.exe"
 )
 if exist "params/Updater/EverythingWinDivert1" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert.dll" "bin" "WinDivert.dll"
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert64.md5" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
 )
 if exist "params/Updater/EverythingWinDivert641" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert64.sys" "bin" "WinDivert64.sys"
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert.md5" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
 )
 if exist "params/Updater/EverythingCygwin11" (
     cls
@@ -1139,5 +1142,6 @@ if "%LOCALHASH%"=="%CORRECTHASH%" (
     call :PrintGreen "%~3 successfully verified. Hash: %LOCALHASH%"
 ) else (
     call :PrintRed "%~3 failed the verification. File might be damaged or the correct hash has not been updated yet. Your hash: %LOCALHASH%, Correct hash: %CORRECTHASH%"
+    pause
 )
 exit /b
