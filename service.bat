@@ -1018,8 +1018,8 @@ echo 3. Update WinDivert.dll: %windivert%
 echo 4. Update WinDivert64.sys: %windivert64%
 echo 5. Update winws.exe: %winws%
 echo 6. Update ipset-all.txt: %ipset%
-echo 7. Update list-general.txt %general%
-echo 8. Verify files when updating %verifywhenupdate%
+echo 7. Update list-general.txt: %general%
+echo 8. Verify files when updating: %verifywhenupdate%
 echo 9. list-general.txt Source: %LIST_SOURCE% %listdefault%
 echo 10. ipset-all Source: %IPSET_SOURCE% %ipsetdefault%
 echo 11. Verifier Hash Algorithm: %ALG%
