@@ -82,7 +82,8 @@ echo 13. Update /lists/ipset-all.txt
 echo 14. Update Everything
 echo 15. Change Settings
 echo 16. Switch Game Filter for TCP (Chats, Profile Pictures, etc.) (%GameFilterTCPStatus%)
-set /p menu_choice=Enter choice (0-16): 
+echo 17. Verify All Files
+set /p menu_choice=Enter choice (0-17): 
 
 if "%menu_choice%"=="1" goto service_install
 if "%menu_choice%"=="2" goto service_remove
@@ -98,6 +99,7 @@ if "%menu_choice%"=="13" goto ips
 if "%menu_choice%"=="14" goto et
 if "%menu_choice%"=="15" goto settings
 if "%menu_choice%"=="16" goto game_switch_tcp
+if "%menu_choice%"=="17" goto verifyall
 goto menu
 
 :: TCP ENABLE ==========================
@@ -1088,6 +1090,17 @@ set "LIST_SOURCE=%LIST_SOURCE_INPUT%"
 
 goto settings
 
+:: ===== verify all files =====
+
+:verifyall
+
+cls
+call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/winws.md5" "%~dp0bin/winws.exe" "winws.exe"
+call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert64.md5" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
+call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert.md5" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
+pause
+goto menu
+
 :: ===== function: get download sources =====
 
 :getsources
@@ -1106,4 +1119,25 @@ exit /b
 echo Downloading %~3...
 echo Source: %~1
 powershell -Command "Start-BitsTransfer -Source \"%~1\" -Destination \"%~2\""
+exit /b
+
+:: ===== function: verify file hash =====
+
+:verifyfile
+
+:: call :verifyfile (hash uri) (file to verify) (name)
+
+echo Verifying %~3...
+for /f "delims=" %%A in ('powershell -Command "(Invoke-WebRequest -Uri \"%~1\" -Headers @{\"Cache-Control\"=\"no-cache\"} -TimeoutSec 5).Content.Trim()" 2^>nul') do set "CORRECTHASH=%%A"
+
+for /f "tokens=2 delims=: " %%A in ('powershell -Command "Get-FileHash %~2 -Algorithm MD5 | Format-List -Property Hash"') do set "LOCALHASH=%%A"
+if not defined CORRECTHASH (
+    call :PrintYellow "Could not reach %~1 to verify %~3. Your hash: %LOCALHASH%"
+    exit /b
+)
+if "%LOCALHASH%"=="%CORRECTHASH%" (
+    call :PrintGreen "%~3 successfully verified. Hash: %LOCALHASH%"
+) else (
+    call :PrintRed "%~3 failed the verification. File might be damaged or the correct hash has not been updated yet. Your hash: %LOCALHASH%, Correct hash: %CORRECTHASH%"
+)
 exit /b
