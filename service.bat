@@ -862,21 +862,33 @@ cd /d "%~dp0"
 if exist "params/Updater/EverythingWinws1" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/winws.exe" "bin" "winws.exe"
-    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/winws.md5" "%~dp0bin/winws.exe" "winws.exe"
+    if exist params/Updater/VerifyFiles1 (
+        call :getalgorithm
+        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/winws.%ALG%" "%~dp0bin/winws.exe" "winws.exe"
+    )
 )
 if exist "params/Updater/EverythingWinDivert1" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert.dll" "bin" "WinDivert.dll"
-    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert64.md5" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
+    if exist params/Updater/VerifyFiles1 (
+        call :getalgorithm
+        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert64.%ALG%" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
+    )
 )
 if exist "params/Updater/EverythingWinDivert641" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert64.sys" "bin" "WinDivert64.sys"
-    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert.md5" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
+    if exist params/Updater/VerifyFiles1 (
+        call :getalgorithm
+        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert.%ALG%" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
+    )
 )
 if exist "params/Updater/EverythingCygwin11" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/cygwin1.dll" "bin" "cygwin1.dll"
+    if exist params/Updater/VerifyFiles1 (
+        call :getalgorithm
+        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/cygwin1.%ALG%" "%~dp0bin/cygwin1.dll" "cygwin1.dll"    )
 )
 if "%~1"=="ext" exit /b
 pause
@@ -963,6 +975,13 @@ if not exist "params/Updater/EverythingList1" (
     set "general=Enabled"
 )
 
+if not exist "params/Updater/VerifyFiles1" (
+    set "verifywhenupdate=Disabled"
+) else (
+    set "verifywhenupdate=Enabled"
+)
+
+
 echo Receiving default download sources...
 
 if not defined defaultipsetsource (
@@ -972,6 +991,8 @@ for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://
 if not defined defaultlistsource (
 for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/ListSource" -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultlistsource=%%A"
 )
+
+call :getalgorithm
 
 cls
 
@@ -998,8 +1019,10 @@ echo 4. Update WinDivert64.sys: %windivert64%
 echo 5. Update winws.exe: %winws%
 echo 6. Update ipset-all.txt: %ipset%
 echo 7. Update list-general.txt %general%
-echo 8. list-general.txt Source: %LIST_SOURCE% %listdefault%
-echo 9. ipset-all Source: %IPSET_SOURCE% %ipsetdefault%
+echo 8. Verify files when updating %verifywhenupdate%
+echo 9. list-general.txt Source: %LIST_SOURCE% %listdefault%
+echo 10. ipset-all Source: %IPSET_SOURCE% %ipsetdefault%
+echo 11. Verifier Hash Algorithm: %ALG%
 echo 0. Back
 set /p settings_choice=Change Setting: 
 
@@ -1010,8 +1033,10 @@ if "%settings_choice%"=="4" call :switchsetting "params\Updater\EverythingWinDiv
 if "%settings_choice%"=="5" call :switchsetting "params\Updater\EverythingWinws1"
 if "%settings_choice%"=="6" call :switchsetting "params\Updater\EverythingIPSet1"
 if "%settings_choice%"=="7" call :switchsetting "params\Updater\EverythingList1"
-if "%settings_choice%"=="8" goto setlistsource
-if "%settings_choice%"=="9" goto setipsetsource
+if "%settings_choice%"=="8" call :switchsetting "params\Updater\VerifyFiles1"
+if "%settings_choice%"=="9" goto setlistsource
+if "%settings_choice%"=="10" goto setipsetsource
+if "%settings_choice%"=="11" goto setalgorithm
 if "%settings_choice%"=="0" goto menu
 goto settings
 
@@ -1093,14 +1118,45 @@ set "LIST_SOURCE=%LIST_SOURCE_INPUT%"
 
 goto settings
 
+:: ===== set algorithm =====
+
+:setalgorithm
+
+cls
+echo Current algorithm: %ALG%, default: SHA512
+echo ==============================
+echo Enter 0 to go back
+echo 1. SHA1 (160-bit)
+echo 2. SHA256 (256-bit)
+echo 3. SHA384 (384-bit)
+echo 4. SHA512 (512-bit)
+echo 5. MD5 (128-bit)
+echo ==============================
+
+set "IPSET_SOURCE_INPUT=0"
+set /p IPSET_SOURCE_INPUT=Enter the new algorithm: 
+
+:: static commands
+
+if "%IPSET_SOURCE_INPUT%"=="0" goto settings
+if "%IPSET_SOURCE_INPUT%"=="1" call :switchalgorithm "SHA1"
+if "%IPSET_SOURCE_INPUT%"=="2" call :switchalgorithm "SHA256"
+if "%IPSET_SOURCE_INPUT%"=="3" call :switchalgorithm "SHA384"
+if "%IPSET_SOURCE_INPUT%"=="4" call :switchalgorithm "SHA512"
+if "%IPSET_SOURCE_INPUT%"=="5" call :switchalgorithm "MD5"
+
+:switchalgorithm
+echo %~1> %~dp0params/Verifier/HashAlgorithm
+goto settings
 :: ===== verify all files =====
 
 :verifyall
 
 cls
-call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/winws.md5" "%~dp0bin/winws.exe" "winws.exe"
-call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert64.md5" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
-call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert.md5" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
+call :getalgorithm
+call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/winws.%ALG%" "%~dp0bin/winws.exe" "winws.exe"
+call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert64.%ALG%" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
+call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/windivert.%ALG%" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
 pause
 goto menu
 
@@ -1111,6 +1167,13 @@ goto menu
 set /p IPSET_SOURCE=<%~dp0params/DownloadSources/IPSetSource
 set /p LIST_SOURCE=<%~dp0params/DownloadSources/ListSource
 exit /b
+
+:: ===== function: get hash algorithm =====
+
+:getalgorithm
+
+set /p ALG=<%~dp0params/Verifier/HashAlgorithm
+exit/b
 
 :: ===== function: download file =====
 
@@ -1128,12 +1191,13 @@ exit /b
 
 :verifyfile
 
-:: call :verifyfile (hash uri) (file to verify) (name)
+:: call :verifyfile (hash uri) (file to verify) (name) (algorithm (optional))
+:: call :verifyfile "github.com/example.%ALG%" "bin/example.bin" "Example" "SHA1"
 
 echo Verifying %~3...
 for /f "delims=" %%A in ('powershell -Command "(Invoke-WebRequest -Uri \"%~1\" -Headers @{\"Cache-Control\"=\"no-cache\"} -TimeoutSec 5).Content.Trim()" 2^>nul') do set "CORRECTHASH=%%A"
 
-for /f "tokens=2 delims=: " %%A in ('powershell -Command "Get-FileHash %~2 -Algorithm MD5 | Format-List -Property Hash"') do set "LOCALHASH=%%A"
+for /f "tokens=2 delims=: " %%A in ('powershell -Command "Get-FileHash %~2 -Algorithm %ALG% | Format-List -Property Hash"') do set "LOCALHASH=%%A"
 if not defined CORRECTHASH (
     call :PrintYellow "Could not reach %~1 to verify %~3. Your hash: %LOCALHASH%"
     exit /b
