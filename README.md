@@ -63,9 +63,9 @@
 
 - **Включите QUIC в браузере:**
 
-  Chromium (Chrome, Brave, Edge, Yandex и др.): В chrome://flags найти "QUIC" и включить найденный параметр.
+  Chromium (Chrome, Brave, Edge, Yandex и др.): В chrome://flags найти `Experimental QUIC protocol` и включить найденный параметр.
 
-  Gecko (Firefox, Waterfox, LibreWolf, Zen и др.): В about:config найти "network.http.http3.retry_different_ip_family" и переключить найденный параметр на true.
+  Gecko (Firefox, Waterfox, LibreWolf, Zen и др.): В about:config найти `network.http.http3.retry_different_ip_family` и переключить найденный параметр на true.
 
 - **Попробуйте включить DNS в браузере**
 
