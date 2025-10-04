@@ -783,11 +783,15 @@ goto menu
 :ipset_switch_status
 chcp 437 > nul
 
-findstr /R "^203\.0\.113\.113/32$" "%~dp0lists\ipset-all.txt" >nul
-if !errorlevel!==0 (
-    set "IPsetStatus=empty"
+if exist "%~dp0lists/ipset-all.txt" (
+    findstr /R "^203\.0\.113\.113/32$" "%~dp0lists\ipset-all.txt" >nul
+    if !errorlevel!==0 (
+        set "IPsetStatus=empty"
+    ) else (
+        set "IPsetStatus=loaded"
+    )
 ) else (
-    set "IPsetStatus=loaded"
+    set "IPsetStatus=empty"
 )
 exit /b
 
@@ -795,8 +799,12 @@ exit /b
 :ipset_switch
 chcp 437 > nul
 cls
-
 set "listFile=%~dp0lists\ipset-all.txt"
+if not exist "%listFile" (
+  call :PrintRed "ipset is not downloaded."
+  pause
+  goto menu
+)
 set "backupFile=%listFile%.backup"
 
 findstr /R "^203\.0\.113\.113/32$" "%listFile%" >nul
@@ -859,11 +867,11 @@ goto menu
 
 :bin
 cd /d "%~dp0"
+call :getalgorithm
 if exist "params/Updater/EverythingWinws1" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/winws.exe" "bin" "winws.exe"
     if exist params/Updater/VerifyFiles1 (
-        call :getalgorithm
         call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/winws.%ALG%" "%~dp0bin/winws.exe" "winws.exe"
     )
 )
@@ -871,23 +879,20 @@ if exist "params/Updater/EverythingWinDivert1" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert.dll" "bin" "WinDivert.dll"
     if exist params/Updater/VerifyFiles1 (
-        call :getalgorithm
-        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert64.%ALG%" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
+        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert.%ALG%" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
     )
 )
 if exist "params/Updater/EverythingWinDivert641" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert64.sys" "bin" "WinDivert64.sys"
     if exist params/Updater/VerifyFiles1 (
-        call :getalgorithm
-        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert.%ALG%" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
+        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert64.%ALG%" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
     )
 )
 if exist "params/Updater/EverythingCygwin11" (
     cls
     call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/cygwin1.dll" "bin" "cygwin1.dll"
     if exist params/Updater/VerifyFiles1 (
-        call :getalgorithm
         call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/cygwin1.%ALG%" "%~dp0bin/cygwin1.dll" "cygwin1.dll"    )
 )
 if "%~1"=="ext" exit /b
@@ -1158,10 +1163,18 @@ goto settings
 
 cls
 call :getalgorithm
-call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/winws.%ALG%" "%~dp0bin/winws.exe" "winws.exe"
-call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert64.%ALG%" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
-call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert.%ALG%" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
-call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/cygwin1.%ALG%" "%~dp0bin/cygwin1.dll" "cygwin1.dll"
+if exist "%~dp0bin/winws.exe" (
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/winws.%ALG%" "%~dp0bin/winws.exe" "winws.exe"
+)
+if exist "%~dp0bin/WinDivert64.sys" (
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert64.%ALG%" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
+)
+if exist "%~dp0bin/WinDivert.dll" (
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert.%ALG%" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
+)
+if exist "%~dp0bin/cygwin1.dll" (
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/cygwin1.%ALG%" "%~dp0bin/cygwin1.dll" "cygwin1.dll"
+)
 pause
 goto menu
 
