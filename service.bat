@@ -1189,7 +1189,7 @@ exit/b
 
 echo Downloading %~3...
 echo Source: %~1
-powershell -Command "Start-BitsTransfer -Source \"%~1\" -Destination \"%~2\""
+powershell -Command "Start-BitsTransfer -Source \"%~1\" -Destination \"%~2\" -DisplayName \"%~3\" -Description \" \""
 exit /b
 
 :: ===== function: verify file hash =====
