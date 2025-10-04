@@ -1048,6 +1048,8 @@ if not exist "%~1" (
 )
 goto settings
 
+:: ===== set ipset source =====
+
 :setipsetsource
 
 echo Receiving the default IP Set download source...
@@ -1082,6 +1084,8 @@ echo %IPSET_SOURCE_INPUT%> params/DownloadSources/IPSetSource
 set "IPSET_SOURCE=%IPSET_SOURCE_INPUT%"
 
 goto settings
+
+:: ===== set list source =====
 
 :setlistsource
 
@@ -1192,8 +1196,8 @@ exit /b
 
 :verifyfile
 
-:: call :verifyfile (hash uri) (file to verify) (name) (algorithm (optional))
-:: call :verifyfile "github.com/example.%ALG%" "bin/example.bin" "Example" "SHA1"
+:: call :verifyfile (hash uri) (file to verify) (name)
+:: call :verifyfile "github.com/example.%ALG%" "bin/example.bin" "Example"
 
 echo Verifying %~3...
 for /f "delims=" %%A in ('powershell -Command "(Invoke-WebRequest -Uri \"%~1\" -Headers @{\"Cache-Control\"=\"no-cache\"} -TimeoutSec 5).Content.Trim()" 2^>nul') do set "CORRECTHASH=%%A"
