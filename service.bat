@@ -821,7 +821,7 @@ exit /b
 chcp 437 > nul
 cls
 set "listFile=%~dp0lists\ipset-all.txt"
-if not exist "%listFile" (
+if not exist "%listFile%" (
   call :PrintRed "ipset is not downloaded."
   pause
   goto menu
