@@ -927,6 +927,10 @@ cd /d "%~dp0"
 call :getsources
 cls
 call :downloadfile "%LIST_SOURCE%" "lists\list-general.txt" "list-general.txt"
+>>"lists/list-general.txt" (
+    echo encryptedsni.com
+    echo adblockplus.org
+)
 if "%~1"=="ext" exit /b
 pause
 goto menu
