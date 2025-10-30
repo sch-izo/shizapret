@@ -79,11 +79,10 @@ echo ======shizapret========
 echo 11. Update /bin/ Folder
 echo 12. Update /lists/list-general.txt
 echo 13. Update /lists/ipset-all.txt
-echo 14. Update /lists/ipset-all2.txt
-echo 15. Update Everything
-echo 16. Change Settings
-echo 17. Switch Game Filter for TCP (Chats, Profile Pictures, etc.) (%GameFilterTCPStatus%)
-echo 18. Verify All Files
+echo 14. Update Everything
+echo 15. Change Settings
+echo 16. Switch Game Filter for TCP (Chats, Profile Pictures, etc.) (%GameFilterTCPStatus%)
+echo 17. Verify All Files
 set /p menu_choice=Enter choice (0-17): 
 
 if "%menu_choice%"=="1" goto service_install
@@ -97,11 +96,10 @@ if "%menu_choice%"=="0" exit /b
 if "%menu_choice%"=="11" goto bin
 if "%menu_choice%"=="12" goto list
 if "%menu_choice%"=="13" goto ips
-if "%menu_choice%"=="14" goto ips2
-if "%menu_choice%"=="15" goto et
-if "%menu_choice%"=="16" goto settings
-if "%menu_choice%"=="17" goto game_switch_tcp
-if "%menu_choice%"=="18" goto verifyall
+if "%menu_choice%"=="14" goto et
+if "%menu_choice%"=="15" goto settings
+if "%menu_choice%"=="16" goto game_switch_tcp
+if "%menu_choice%"=="17" goto verifyall
 goto menu
 
 :: TCP ENABLE ==========================
