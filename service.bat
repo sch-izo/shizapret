@@ -33,6 +33,11 @@ if "%~1"=="ips" (
     exit /b
 )
 
+if "%~1"=="ips2" (
+    call :ips2 ext
+    exit /b
+)
+
 if "%~1"=="bin" (
     call :bin ext
     exit /b
@@ -79,10 +84,11 @@ echo ======shizapret========
 echo 11. Update /bin/ Folder
 echo 12. Update /lists/list-general.txt
 echo 13. Update /lists/ipset-all.txt
-echo 14. Update Everything
-echo 15. Change Settings
-echo 16. Switch Game Filter for TCP (Chats, Profile Pictures, etc.) (%GameFilterTCPStatus%)
-echo 17. Verify All Files
+echo 14. Update /lists/ipset-all2.txt
+echo 15. Update Everything
+echo 16. Change Settings
+echo 17. Switch Game Filter for TCP (Chats, Profile Pictures, etc.) (%GameFilterTCPStatus%)
+echo 18. Verify All Files
 set /p menu_choice=Enter choice (0-17): 
 
 if "%menu_choice%"=="1" goto service_install
@@ -96,10 +102,11 @@ if "%menu_choice%"=="0" exit /b
 if "%menu_choice%"=="11" goto bin
 if "%menu_choice%"=="12" goto list
 if "%menu_choice%"=="13" goto ips
-if "%menu_choice%"=="14" goto et
-if "%menu_choice%"=="15" goto settings
-if "%menu_choice%"=="16" goto game_switch_tcp
-if "%menu_choice%"=="17" goto verifyall
+if "%menu_choice%"=="14" goto ips2
+if "%menu_choice%"=="15" goto et
+if "%menu_choice%"=="16" goto settings
+if "%menu_choice%"=="17" goto game_switch_tcp
+if "%menu_choice%"=="18" goto verifyall
 goto menu
 
 :: TCP ENABLE ==========================
@@ -804,15 +811,18 @@ goto menu
 :ipset_switch_status
 chcp 437 > nul
 
-if exist "%~dp0lists/ipset-all.txt" (
-    findstr /R "^203\.0\.113\.113/32$" "%~dp0lists\ipset-all.txt" >nul
+set "listFile=%~dp0lists\ipset-all.txt"
+for /f %%i in ('type "%listFile%" 2^>nul ^| find /c /v ""') do set "lineCount=%%i"
+
+if !lineCount!==0 (
+    set "IPsetStatus=any"
+) else (
+    findstr /R "^203\.0\.113\.113/32$" "%listFile%" >nul
     if !errorlevel!==0 (
-        set "IPsetStatus=empty"
+        set "IPsetStatus=none"
     ) else (
         set "IPsetStatus=loaded"
     )
-) else (
-    set "IPsetStatus=empty"
 )
 exit /b
 
@@ -828,30 +838,40 @@ if not exist "%listFile%" (
 )
 set "backupFile=%listFile%.backup"
 
-findstr /R "^203\.0\.113\.113/32$" "%listFile%" >nul
-if !errorlevel!==0 (
-    echo Enabling ipset based bypass...
 
-    if exist "%backupFile%" (
-        del /f /q "%listFile%"
-        ren "%backupFile%" "ipset-all.txt"
-    ) else (
-        echo Error: no backup to restore. Update list from service menu by yourself
-    )
-
-) else (
-    echo Disabling ipset based bypass...
-
+if "%IPsetStatus%"=="loaded" (
+    echo Switching to none mode...
+    
     if not exist "%backupFile%" (
         ren "%listFile%" "ipset-all.txt.backup"
     ) else (
         del /f /q "%backupFile%"
         ren "%listFile%" "ipset-all.txt.backup"
     )
-
+    
     >"%listFile%" (
         echo 203.0.113.113/32
     )
+    
+) else if "%IPsetStatus%"=="none" (
+    echo Switching to any mode...
+    
+    >"%listFile%" (
+        rem Creating empty file
+    )
+    
+) else if "%IPsetStatus%"=="any" (
+    echo Switching to loaded mode...
+    
+    if exist "%backupFile%" (
+        del /f /q "%listFile%"
+        ren "%backupFile%" "ipset-all.txt"
+    ) else (
+        echo Error: no backup to restore. Update list from service menu first
+        pause
+        goto menu
+    )
+    
 )
 
 pause
@@ -883,6 +903,18 @@ call :downloadfile "%IPSET_SOURCE%" "lists/ipset-all.txt" "ipset-all.txt"
 if "%~1"=="ext" exit /b
 pause
 goto menu
+
+:: ===== updater: ipset2 =====
+
+:ips
+cd /d "%~dp0"
+call :getsources
+cls
+call :downloadfile "https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-all.txt" "lists/ipset-all2.txt" "ipset-all2.txt"
+if "%~1"=="ext" exit /b
+pause
+goto menu
+
 
 :: ===== updater: bin =====
 

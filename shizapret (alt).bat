@@ -25,6 +25,10 @@ if not exist "lists/ipset-all.txt" (
     call service.bat ips
 )
 
+if not exist "lists/ipset-all2.txt" (
+    call service.bat ips2
+)
+
 if exist "params/AutoUpdater/AutoUpdate1" (
     call service.bat et
 )
