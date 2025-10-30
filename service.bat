@@ -1,5 +1,5 @@
 @echo off
-set "LOCAL_VERSION=1.8.0b"
+set "LOCAL_VERSION=1.8.1"
 
 :: External commands
 if "%~1"=="status_zapret" (
@@ -30,11 +30,6 @@ if "%~1"=="list" (
 
 if "%~1"=="ips" (
     call :ips ext
-    exit /b
-)
-
-if "%~1"=="ips2" (
-    call :ips2 ext
     exit /b
 )
 
@@ -903,18 +898,6 @@ call :downloadfile "%IPSET_SOURCE%" "lists/ipset-all.txt" "ipset-all.txt"
 if "%~1"=="ext" exit /b
 pause
 goto menu
-
-:: ===== updater: ipset2 =====
-
-:ips
-cd /d "%~dp0"
-call :getsources
-cls
-call :downloadfile "https://raw.githubusercontent.com/V3nilla/IPSets-For-Bypass-in-Russia/refs/heads/main/ipset-all.txt" "lists/ipset-all2.txt" "ipset-all2.txt"
-if "%~1"=="ext" exit /b
-pause
-goto menu
-
 
 :: ===== updater: bin =====
 
