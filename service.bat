@@ -85,6 +85,7 @@ echo 5. Check Updates
 echo 6. Switch Check Updates (%CheckUpdatesStatus%)
 echo 7. Switch Game Filter (%GameFilterStatus%)
 echo 8. Switch ipset (%IPsetStatus%)
+echo 9. Run Tests
 echo 0. Exit
 echo ======shizapret========
 echo 11. Update /bin/ Folder
@@ -104,6 +105,7 @@ if "%menu_choice%"=="5" goto service_check_updates
 if "%menu_choice%"=="6" goto check_updates_switch
 if "%menu_choice%"=="7" goto game_switch
 if "%menu_choice%"=="8" goto ipset_switch
+if "%menu_choice%"=="9" goto run_tests
 if "%menu_choice%"=="0" exit /b
 if "%menu_choice%"=="11" goto bin
 if "%menu_choice%"=="12" goto list
@@ -942,6 +944,19 @@ if "%IPsetStatus%"=="loaded" (
 
 pause
 goto menu
+
+
+:: RUN TESTS =============================
+:run_tests
+chcp 65001 >nul
+cls
+
+echo Starting configuration tests...
+echo.
+start "" powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0utils\test_zapret.ps1"
+pause
+goto menu
+
 
 :: Utility functions
 
