@@ -9,11 +9,14 @@ if "%~1"=="status_zapret" (
 )
 
 if "%~1"=="check_updates" (
-    if not "%~2"=="soft" (
-        start /b service check_updates soft
-    ) else (
-        call :service_check_updates soft
+    if exist "%~dp0utils\check_updates.enabled" (
+        if not "%~2"=="soft" (
+            start /b service check_updates soft
+        ) else (
+            call :service_check_updates soft
+        )
     )
+
     exit /b
 )
 
@@ -44,8 +47,14 @@ if "%~1"=="et" (
 )
 
 if "%1"=="admin" (
+    call :check_command chcp
+    call :check_command find
+    call :check_command findstr
+    call :check_command netsh
     echo Started with admin rights
 ) else (
+    call :check_extracted
+    call :check_command powershell
     echo Requesting admin rights...
     powershell -Command "Start-Process 'cmd.exe' -ArgumentList '/c \"\"%~f0\" admin\"' -Verb RunAs"
     exit
@@ -57,6 +66,7 @@ setlocal EnableDelayedExpansion
 cls
 call :ipset_switch_status
 call :game_switch_status
+call :check_updates_switch_status
 
 set "menu_choice=null"
 
@@ -72,8 +82,9 @@ echo 2. Remove Services
 echo 3. Check Status
 echo 4. Run Diagnostics
 echo 5. Check Updates
-echo 6. Switch Game Filter (%GameFilterStatus%)
-echo 7. Switch ipset (%IPsetStatus%)
+echo 6. Switch Check Updates (%CheckUpdatesStatus%)
+echo 7. Switch Game Filter (%GameFilterStatus%)
+echo 8. Switch ipset (%IPsetStatus%)
 echo 0. Exit
 echo ======shizapret========
 echo 11. Update /bin/ Folder
@@ -90,8 +101,9 @@ if "%menu_choice%"=="2" goto service_remove
 if "%menu_choice%"=="3" goto service_status
 if "%menu_choice%"=="4" goto service_diagnostics
 if "%menu_choice%"=="5" goto service_check_updates
-if "%menu_choice%"=="6" goto game_switch
-if "%menu_choice%"=="7" goto ipset_switch
+if "%menu_choice%"=="6" goto check_updates_switch
+if "%menu_choice%"=="7" goto game_switch
+if "%menu_choice%"=="8" goto ipset_switch
 if "%menu_choice%"=="0" exit /b
 if "%menu_choice%"=="11" goto bin
 if "%menu_choice%"=="12" goto list
@@ -100,6 +112,7 @@ if "%menu_choice%"=="14" goto et
 if "%menu_choice%"=="15" goto settings
 if "%menu_choice%"=="16" goto game_switch_tcp
 if "%menu_choice%"=="17" goto verifyall
+
 goto menu
 
 :: TCP ENABLE ==========================
@@ -123,13 +136,19 @@ if !errorlevel!==0 (
 
 call :test_service zapret
 call :test_service WinDivert
+
+set "BIN_PATH=%~dp0bin\"
+if not exist "%BIN_PATH%\*.sys" (
+    call :PrintRed "WinDivert64.sys file NOT found."
+)
+pause
 echo:
 
 tasklist /FI "IMAGENAME eq winws.exe" | find /I "winws.exe" > nul
 if !errorlevel!==0 (
-    call :PrintGreen "Bypass (winws.exe) is ACTIVE"
+    call :PrintGreen "Bypass (winws.exe) is RUNNING"
 ) else (
-    call :PrintRed "Bypass (winws.exe) NOT FOUND"
+    call :PrintRed "Bypass (winws.exe) is NOT running"
 )
 
 pause
@@ -352,7 +371,7 @@ set "GITHUB_RELEASE_URL=https://github.com/sch-izo/shizapret/releases/tag/"
 set "GITHUB_DOWNLOAD_URL=https://github.com/sch-izo/shizapret/releases/latest/download/shizapret-"
 
 :: Get the latest version from GitHub
-for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri \"%GITHUB_VERSION_URL%\" -Headers @{\"Cache-Control\"=\"no-cache\"} -TimeoutSec 5).Content.Trim()" 2^>nul') do set "GITHUB_VERSION=%%A"
+for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri \"%GITHUB_VERSION_URL%\" -Headers @{\"Cache-Control\"=\"no-cache\"} -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "GITHUB_VERSION=%%A"
 
 :: Error handling
 if not defined GITHUB_VERSION (
@@ -444,6 +463,16 @@ if !proxyEnabled!==1 (
 )
 echo:
 
+:: Check netsh
+where netsh >nul 2>nul
+if !errorlevel! neq 0  (
+    call :PrintRed "[X] netsh command not found, check your PATH variable"
+	echo PATH = "%PATH%"
+	echo:
+	pause
+	goto menu
+)
+
 :: TCP timestamps check
 netsh interface tcp show global | findstr /i "timestamps" | findstr /i "enabled" > nul
 if !errorlevel!==0 (
@@ -519,10 +548,18 @@ if !errorlevel!==0 (
 )
 echo:
 
+:: WinDivert64.sys file
+set "BIN_PATH=%~dp0bin\"
+if not exist "%BIN_PATH%\*.sys" (
+    call :PrintRed "WinDivert64.sys file NOT found."
+)
+echo:
+
 :: VPN
+set "VPN_SERVICES="
 sc query | findstr /I "VPN" > nul
 if !errorlevel!==0 (
-    for /f "tokens=2 delims=:" %%A in ('sc query ^|^ findstr /I "VPN"') do (
+    for /f "tokens=2 delims=:" %%A in ('sc query ^| findstr /I "VPN"') do (
         if not defined VPN_SERVICES (
             set "VPN_SERVICES=!VPN_SERVICES!%%A"
         ) else (
@@ -750,7 +787,7 @@ goto menu
 :game_switch_status
 chcp 437 > nul
 
-set "gameFlagFile=%~dp0bin\game_filter.enabled"
+set "gameFlagFile=%~dp0utils\game_filter.enabled"
 
 if exist "%gameFlagFile%" (
     set "GameFilterStatus=enabled"
@@ -760,7 +797,7 @@ if exist "%gameFlagFile%" (
     set "GameFilter=12"
 )
 
-set "gameTCPFlagFile=%~dp0bin\game_filtertcp.enabled"
+set "gameTCPFlagFile=%~dp0utils\game_filtertcp.enabled"
 
 if exist "%gameTCPFlagFile%" (
     set "GameFilterTCPStatus=enabled"
@@ -801,6 +838,35 @@ if not exist "%gameTCPFlagFile%" (
     echo Disabling game filter for TCP...
     del /f /q "%gameTCPFlagFile%"
     call :PrintYellow "Restart shizapret to apply the changes."
+)
+
+pause
+goto menu
+
+:: CHECK UPDATES SWITCH =================
+:check_updates_switch_status
+chcp 437 > nul
+
+set "checkUpdatesFlag=%~dp0utils\check_updates.enabled"
+
+if exist "%checkUpdatesFlag%" (
+    set "CheckUpdatesStatus=enabled"
+) else (
+    set "CheckUpdatesStatus=disabled"
+)
+exit /b
+
+
+:check_updates_switch
+chcp 437 > nul
+cls
+
+if not exist "%checkUpdatesFlag%" (
+    echo Enabling check updates...
+    echo ENABLED > "%checkUpdatesFlag%"
+) else (
+    echo Disabling check updates...
+    del /f /q "%checkUpdatesFlag%"
 )
 
 pause
@@ -890,6 +956,28 @@ exit /b
 :PrintYellow
 powershell -Command "Write-Host \"%~1\" -ForegroundColor Yellow"
 exit /b
+
+:check_command
+where %1 >nul 2>&1
+if %errorLevel% neq 0 (
+    echo [ERROR] %1 not found in PATH
+    echo Fix your PATH variable with instructions here https://github.com/Flowseal/zapret-discord-youtube/issues/7490
+    pause
+    exit /b 1
+)
+exit /b 0
+
+:check_extracted
+set "extracted=1"
+
+if not exist "%~dp0bin\" set "extracted=0"
+
+if "%extracted%"=="0" (
+    echo shizapret must be extracted from archive first or bin folder not found for some reason
+    pause
+    exit
+)
+exit /b 0
 
 :: ===== shizapret =====
 
@@ -984,62 +1072,62 @@ cls
 call :getsources
 
 if not exist "params/AutoUpdater/AutoUpdate1" (
-    set "autoupdate=Disabled"
+    set "param_autoupdate=Disabled"
 ) else (
-    set "autoupdate=Enabled"
+    set "param_autoupdate=Enabled"
 )
 
 if not exist "params/Updater/EverythingCygwin11" (
-    set "cygwin1=Disabled"
+    set "param_cygwin1=Disabled"
 ) else (
-    set "cygwin1=Enabled"
+    set "param_cygwin1=Enabled"
 )
 
 if not exist "params/Updater/EverythingWinDivert1" (
-    set "windivert=Disabled"
+    set "param_windivert=Disabled"
 ) else (
-    set "windivert=Enabled"
+    set "param_windivert=Enabled"
 )
 
 if not exist "params/Updater/EverythingWinDivert641" (
-    set "windivert64=Disabled"
+    set "param_windivert64=Disabled"
 ) else (
-    set "windivert64=Enabled"
+    set "param_windivert64=Enabled"
 )
 
 if not exist "params/Updater/EverythingWinws1" (
-    set "winws=Disabled"
+    set "param_winws=Disabled"
 ) else (
-    set "winws=Enabled"
+    set "param_winws=Enabled"
 )
 
 if not exist "params/Updater/EverythingIPSet1" (
-    set "ipset=Disabled"
+    set "param_ipset_all=Disabled"
 ) else (
-    set "ipset=Enabled"
+    set "param_ipset_all=Enabled"
 )
 
 if not exist "params/Updater/EverythingList1" (
-    set "general=Disabled"
+    set "param_list_general=Disabled"
 ) else (
-    set "general=Enabled"
+    set "param_list_general=Enabled"
 )
 
 if not exist "params/Updater/VerifyFiles1" (
-    set "verifywhenupdate=Disabled"
+    set "param_verify_when_updating=Disabled"
 ) else (
-    set "verifywhenupdate=Enabled"
+    set "param_verify_when_updating=Enabled"
 )
 
 
 echo Receiving default download sources...
 
 if not defined defaultipsetsource (
-for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/IPSetSource" -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultipsetsource=%%A"
+for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/IPSetSource" -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultipsetsource=%%A"
 )
 
 if not defined defaultlistsource (
-for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/ListSource" -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultlistsource=%%A"
+for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/ListSource" -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultlistsource=%%A"
 )
 
 call :getalgorithm
@@ -1055,23 +1143,23 @@ if "%IPSET_SOURCE%"=="%defaultipsetsource%" set "ipsetdefault=(Default)"
 set "settings_choice=null"
 if not defined defaultipsetsource (
     set "defaultipsetsource=https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/ipset-all.txt"
-    echo Could not receive the default IP Set source! Fell back to "%defaultipsetsource%".
+    echo Could not receive the default ipset source! Fell back to "%defaultipsetsource%".
 )
 if not defined defaultlistsource (
     set "defaultlistsource=https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt"
     echo Could not receive the default list source! Fell back to "%defaultlistsource%".
 )
 echo =======Settings========
-echo 1. Update on start: %autoupdate%
-echo 2. Update cygwin1.dll: %cygwin1%
-echo 3. Update WinDivert.dll: %windivert%
-echo 4. Update WinDivert64.sys: %windivert64%
-echo 5. Update winws.exe: %winws%
-echo 6. Update ipset-all.txt: %ipset%
-echo 7. Update list-general.txt: %general%
-echo 8. Verify files when updating: %verifywhenupdate%
+echo 1. Update on start: %param_autoupdate%
+echo 2. Update cygwin1.dll: %param_cygwin1%
+echo 3. Update WinDivert.dll: %param_windivert%
+echo 4. Update WinDivert64.sys: %param_windivert64%
+echo 5. Update winws.exe: %param_winws%
+echo 6. Update ipset-all.txt: %param_ipset_all%
+echo 7. Update list-general.txt: %param_list_general%
+echo 8. Verify files when updating: %param_verify_when_updating%
 echo 9. list-general.txt Source: %LIST_SOURCE% %listdefault%
-echo 10. ipset-all Source: %IPSET_SOURCE% %ipsetdefault%
+echo 10. ipset-all.txt Source: %IPSET_SOURCE% %ipsetdefault%
 echo 11. Verifier Hash Algorithm: %ALG%
 echo 0. Back
 set /p settings_choice=Change Setting: 
@@ -1102,15 +1190,15 @@ goto settings
 
 :setipsetsource
 
-echo Receiving the default IP Set download source...
+echo Receiving the default ipset download source...
 
 if not defined defaultipsetsource (
-for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/IPSetSource" -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultipsetsource=%%A"
+for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/IPSetSource" -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultipsetsource=%%A"
 )
 
 if not defined defaultipsetsource (
     set "defaultipsetsource=https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/ipset-all.txt"
-    echo Could not receive the default IP Set source! Fell back to "%defaultipsetsource%".
+    echo Could not receive the default ipset source! Fell back to "%defaultipsetsource%".
 )
 
 cls
@@ -1258,7 +1346,7 @@ exit /b
 :: call :verifyfile "github.com/example.%ALG%" "bin/example.bin" "Example"
 
 echo Verifying %~3...
-for /f "delims=" %%A in ('powershell -Command "(Invoke-WebRequest -Uri \"%~1\" -Headers @{\"Cache-Control\"=\"no-cache\"} -TimeoutSec 5).Content.Trim()" 2^>nul') do set "CORRECTHASH=%%A"
+for /f "delims=" %%A in ('powershell -Command "(Invoke-WebRequest -Uri \"%~1\" -Headers @{\"Cache-Control\"=\"no-cache\"} -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "CORRECTHASH=%%A"
 
 for /f "tokens=2 delims=: " %%A in ('powershell -Command "Get-FileHash %~2 -Algorithm %ALG% | Format-List -Property Hash"') do set "LOCALHASH=%%A"
 if not defined CORRECTHASH (
