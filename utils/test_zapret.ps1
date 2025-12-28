@@ -276,6 +276,7 @@ function Invoke-DpiSuite {
             }
             $results += [PSCustomObject]@{ TargetId = 'UNKNOWN'; Provider = 'UNKNOWN'; Lines = @($failedLine); Warned = $false }
         }
+        $rs.Powershell.Dispose()
     }
     $runspacePool.Close()
     $runspacePool.Dispose()
@@ -383,7 +384,7 @@ $dpiTargets = Build-DpiTargets -CustomUrl $dpiCustomUrl
 # Config
 $targetDir = $rootDir
 if (-not $targetDir) { $targetDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
-$batFiles = Get-ChildItem -Path $targetDir -Filter "*.bat" | Where-Object { $_.Name -ne "service.bat" } | Sort-Object Name
+$batFiles = Get-ChildItem -Path $targetDir -Filter "*.bat" | Where-Object { $_.Name -notlike "service*" } | Sort-Object Name
 
 $globalResults = @()
 
@@ -575,7 +576,7 @@ try {
         # Create flag file to indicate ipset was switched
         "" | Out-File -FilePath $ipsetFlagFile -Encoding UTF8
     }
-	Write-Host "[WARNING] Tests may take several minutes to complete. Please wait..." -ForegroundColor Yellow
+    Write-Host "[WARNING] Tests may take several minutes to complete. Please wait..." -ForegroundColor Yellow
 
     $configNum = 0
     foreach ($file in $batFiles) {
@@ -817,7 +818,6 @@ try {
             }
         }
     }
-
     Write-Host ""
     Write-Host "Best config: $bestConfig" -ForegroundColor Green
     Write-Host ""
