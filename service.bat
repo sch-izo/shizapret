@@ -1,5 +1,5 @@
 @echo off
-set "LOCAL_VERSION=1.8.3"
+set "LOCAL_VERSION=1.8.4"
 
 :: External commands
 if "%~1"=="status_zapret" (
@@ -251,7 +251,11 @@ for %%f in (*.bat) do (
 :: Choosing file
 set "choice="
 set /p "choice=Input file index (number): "
-if "!choice!"=="" goto :eof
+if "!choice!"=="" (
+    echo The choice is empty, exiting...
+    pause
+    goto menu
+)
 
 set "selectedFile=!file%choice%!"
 if not defined selectedFile (
