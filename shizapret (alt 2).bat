@@ -1,4 +1,4 @@
-:: general (ALT 11) (from Flowseal/zapret-discord-youtube) + added ports/IPs from general (Dronatar) (by Dronatar)
+:: general (ALT 11) (from Flowseal/zapret-discord-youtube) + added ports/IPs/hosts from general (Dronatar) (by Dronatar)
 
 :: https://github.com/Flowseal/zapret-discord-youtube
 :: https://github.com/V3nilla/IPSets-For-Bypass-in-Russia
@@ -51,7 +51,7 @@ start "%~n0" /min "%BIN%winws.exe" --wf-tcp=80,443,2053,2083,2087,2096,8443,%Gam
 
 --comment YouTube --filter-tcp=443 --hostlist="%LISTS%list-google.txt" --ip-id=zero --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%tls_clienthello_www_google_com.bin" --dpi-desync-fake-tls="%BIN%tls_clienthello_www_google_com.bin" --new ^
 
---comment List (UDP 80, 443) --filter-tcp=80,443 --hostlist="%LISTS%list-general.txt" --hostlist-exclude="%LISTS%list-exclude.txt" --ipset-exclude="%LISTS%ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=654 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%tls_clienthello_max_ru.bin" --dpi-desync-fake-tls="%BIN%tls_clienthello_max_ru.bin" --new ^
+--comment List+extra domains (UDP 80, 443) --filter-tcp=80,443 --hostlist="%LISTS%list-general.txt" --hostlist-exclude="%LISTS%list-exclude.txt" --ipset-exclude="%LISTS%ipset-exclude.txt" --hostlist-domains=adguard.com,adguard-vpn.com,totallyacdn.com,whiskergalaxy.com,windscribe.com,windscribe.net,soundcloud.com,sndcdn.com,soundcloud.cloud,nexusmods.com,nexus-cdn.com,prostovpn.org,html-classic.itch.zone,speedtest.net,softportal.com,ntc.party,mega.nz,mega.co.nz,modrinth.com,forgecdn.net,minecraftforge.net,neoforged.net,essential.gg,imagedelivery.net,dns.malw.link,cloudflare-gateway.com,quora.com,amazon.com,awsstatic.com,amazonaws.com,awsapps.com,roblox.com,rbxcdn.com,whatsapp.com,whatsapp.net --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=654 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%tls_clienthello_max_ru.bin" --dpi-desync-fake-tls="%BIN%tls_clienthello_max_ru.bin" --new ^
 
 --comment ipset (UDP 443) --filter-udp=443 --ipset="%LISTS%ipset-all.txt" --hostlist-exclude="%LISTS%list-exclude.txt" --ipset-exclude="%LISTS%ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic="%BIN%quic_initial_www_google_com.bin" --new ^
 
