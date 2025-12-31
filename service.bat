@@ -108,7 +108,6 @@ if "%menu_choice%"=="7" goto game_switch
 if "%menu_choice%"=="8" goto ipset_switch
 if "%menu_choice%"=="9" goto hosts_update
 if "%menu_choice%"=="10" goto run_tests
-if "%menu_choice%"=="0" exit /b
 if "%menu_choice%"=="11" goto bin
 if "%menu_choice%"=="12" goto list
 if "%menu_choice%"=="13" goto ips
@@ -116,6 +115,7 @@ if "%menu_choice%"=="14" goto et
 if "%menu_choice%"=="15" goto settings
 if "%menu_choice%"=="16" goto game_switch_tcp
 if "%menu_choice%"=="17" goto verifyall
+if "%menu_choice%"=="0" exit /b
 
 goto menu
 
