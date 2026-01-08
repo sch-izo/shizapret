@@ -21,7 +21,8 @@ if not exist "%LISTS%ipset-all.txt" call service.bat ips
 call service.bat check_updates
 
 cls
-chcp 65001 >nul :: UTF-8
+chcp 65001 >nul
+:: 65001 - UTF-8
 cd /d %BIN%
 
 start "%~n0" /min "%BIN%winws.exe" --wf-tcp=80,443,2053,2083,2087,2096,8443,%GameFilterTCP% --wf-udp=443,1400,3478-3482,3484,3488,3489,3491-3493,3495-3497,19294-19344,50000-50100,49152-65535,%GameFilter% ^
