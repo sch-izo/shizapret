@@ -1,44 +1,27 @@
 :: general (ALT 11) (from Flowseal/zapret-discord-youtube) + added ports/IPs/hosts from general (Dronatar) (by Dronatar)
 
 :: https://github.com/Flowseal/zapret-discord-youtube
-:: https://github.com/V3nilla/IPSets-For-Bypass-in-Russia
 :: https://github.com/Flowseal/zapret-discord-youtube/discussions/3279
 :: https://github.com/bol-van/rulist
-:: https://steamcommunity.com/sharedfiles/filedetails/?id=3496724173
 
 @echo off
 title %~n0
-
 cd /d "%~dp0"
-
-call service.bat status_zapret
-
-call service.bat load_game_filter
-
-if not exist "bin/cygwin1.dll" (
-    call service.bat bin
-)
-
-if not exist "lists/list-general.txt" (
-    call service.bat list
-)
-
-if not exist "lists/ipset-all.txt" (
-    call service.bat ips
-)
-
-if exist "params/AutoUpdater/AutoUpdate1" (
-    call service.bat et
-)
-
-cls
-
-call service.bat check_updates
-
-chcp 65001 >nul
 
 set "BIN=%~dp0bin\"
 set "LISTS=%~dp0lists\"
+
+call service.bat status_zapret
+call service.bat load_game_filter
+
+if not exist "%BIN%cygwin1.dll" call service.bat bin
+if not exist "%LISTS%list-general.txt" call service.bat list
+if not exist "%LISTS%ipset-all.txt" call service.bat ips
+
+call service.bat check_updates
+
+cls
+chcp 65001 >nul :: UTF-8
 cd /d %BIN%
 
 start "%~n0" /min "%BIN%winws.exe" --wf-tcp=80,443,2053,2083,2087,2096,8443,%GameFilterTCP% --wf-udp=443,1400,3478-3482,3484,3488,3489,3491-3493,3495-3497,19294-19344,50000-50100,49152-65535,%GameFilter% ^

@@ -60,61 +60,87 @@ if "%1"=="admin" (
     exit
 )
 
+set "defaultlistsource=https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt"
+set "defaultipsetsource=https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_smart4.txt"
+
 :: MENU ================================
 setlocal EnableDelayedExpansion
 :menu
 cls
+
 call :ipset_switch_status
 call :game_switch_status
 call :check_updates_switch_status
+call :getsources
+call :getalgorithm
+
+if "%IPSET_SOURCE%"=="%defaultipsetsource%" set "ipsetdefault=[default]"
+if "%LIST_SOURCE%"=="%defaultlistsource%" set "listdefault=[default]"
+
+if not exist "%~dp0utils\VerifyFiles" (
+    set "param_verify_when_updating=disabled"
+) else (
+    set "param_verify_when_updating=enabled"
+)
 
 set "menu_choice=null"
 
-if "%~1"=="settings" (
-    call :settings
-    exit /b
-)
-echo =======================
-echo =       v!LOCAL_VERSION!        =
-echo =========Menu==========
-echo 1. Install Service
-echo 2. Remove Services
-echo 3. Check Status
-echo 4. Run Diagnostics
-echo 5. Check Updates
-echo 6. Switch Check Updates (%CheckUpdatesStatus%)
-echo 7. Switch Game Filter (%GameFilterStatus%)
-echo 8. Switch ipset (%IPsetStatus%)
-echo 9. Update hosts file (for discord voice)
-echo 10. Run Tests
-echo 0. Exit
-echo ======shizapret========
-echo 11. Update /bin/ Folder
-echo 12. Update /lists/list-general.txt
-echo 13. Update /lists/ipset-all.txt
-echo 14. Update Everything
-echo 15. Change Settings
-echo 16. Switch Game Filter for TCP (Chats, Profile Pictures, etc.) (%GameFilterTCPStatus%)
-echo 17. Verify All Files
-set /p menu_choice=Enter choice (0-17): 
+echo.
+echo   MENU v!LOCAL_VERSION!
+echo   --------------------------------------------------------------------------
+echo.
+echo   :: SERVICE                 :: SETTINGS
+echo      1. Install Service         21. Switch Game Filter (UDP)  [!GameFilterStatus!]
+echo      2. Remove Services         22. Switch Game Filter (TCP)  [!GameFilterTCPStatus!]
+echo      3. Check Status            23. Switch Check Updates      [!CheckUpdatesStatus!]
+echo                                 24. Switch ipset              [!IPsetStatus!]
+echo   :: UPDATES                    25. list-general Source       %listdefault%
+echo      4. Update bin\ Folder      26. ipset-all Source          %ipsetdefault%
+echo      5. Update list-general     27. Verify files on update    [!param_verify_when_updating!]
+echo      6. Update ipset-all        28. Verifier Hash Algorithm   [!ALG!]
+echo      7. Update Everything
+echo      8. Update hosts File
+echo      9. Check for Updates
+echo.
+echo   :: TOOLS
+echo      10. Run Diagnostics
+echo      11. Run Tests
+echo      12. Verify All Files
+echo.
+echo  --------------------------------------------------------------------------
+echo      0. Exit
+echo.
 
+set /p menu_choice=Enter choice (0-28): 
+
+:: Service
 if "%menu_choice%"=="1" goto service_install
 if "%menu_choice%"=="2" goto service_remove
 if "%menu_choice%"=="3" goto service_status
-if "%menu_choice%"=="4" goto service_diagnostics
-if "%menu_choice%"=="5" goto service_check_updates
-if "%menu_choice%"=="6" goto check_updates_switch
-if "%menu_choice%"=="7" goto game_switch
-if "%menu_choice%"=="8" goto ipset_switch
-if "%menu_choice%"=="9" goto hosts_update
-if "%menu_choice%"=="10" goto run_tests
-if "%menu_choice%"=="11" goto bin
-if "%menu_choice%"=="12" goto list
-if "%menu_choice%"=="13" goto ips
-if "%menu_choice%"=="14" goto et
-if "%menu_choice%"=="15" goto settings
-if "%menu_choice%"=="16" goto game_switch_tcp
-if "%menu_choice%"=="17" goto verifyall
+
+:: Updates
+if "%menu_choice%"=="4" goto bin
+if "%menu_choice%"=="5" goto list
+if "%menu_choice%"=="6" goto ips
+if "%menu_choice%"=="7" goto et
+if "%menu_choice%"=="8" goto hosts_update
+if "%menu_choice%"=="9" goto service_check_updates
+
+:: Tools
+if "%menu_choice%"=="10" goto service_diagnostics
+if "%menu_choice%"=="11" goto run_tests
+if "%menu_choice%"=="12" goto verifyall
+
+:: Settings
+if "%menu_choice%"=="21" goto game_switch
+if "%menu_choice%"=="22" goto game_switch_tcp
+if "%menu_choice%"=="23" goto check_updates_switch
+if "%menu_choice%"=="24" goto ipset_switch
+if "%menu_choice%"=="25" goto setlistsource
+if "%menu_choice%"=="26" goto setipsetsource
+if "%menu_choice%"=="27" goto verifyfilesparam
+if "%menu_choice%"=="28" goto setalgorithm
+
 if "%menu_choice%"=="0" exit /b
 
 goto menu
@@ -1062,7 +1088,7 @@ exit /b 0
 cd /d "%~dp0"
 call :getsources
 cls
-call :downloadfile "%IPSET_SOURCE%" "lists/ipset-all.txt" "ipset-all.txt"
+call :downloadfile "%IPSET_SOURCE%" "%~dp0lists/ipset-all.txt" "ipset-all.txt"
 if "%~1"=="ext" exit /b
 pause
 goto menu
@@ -1072,33 +1098,31 @@ goto menu
 :bin
 cd /d "%~dp0"
 call :getalgorithm
-if exist "params/Updater/EverythingWinws1" (
-    cls
-    call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/winws.exe" "bin" "winws.exe"
-    if exist params/Updater/VerifyFiles1 (
-        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/winws.%ALG%" "%~dp0bin/winws.exe" "winws.exe"
-    )
+
+cls
+call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/winws.exe" "%~dp0bin" "winws.exe"
+if exist %~dp0utils\VerifyFiles (
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/winws.%ALG%" "%~dp0bin/winws.exe" "winws.exe"
 )
-if exist "params/Updater/EverythingWinDivert1" (
-    cls
-    call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert.dll" "bin" "WinDivert.dll"
-    if exist params/Updater/VerifyFiles1 (
-        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert.%ALG%" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
-    )
+
+cls
+call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert.dll" "%~dp0bin" "WinDivert.dll"
+if exist %~dp0utils\VerifyFiles (
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert.%ALG%" "%~dp0bin/WinDivert.dll" "WinDivert.dll"
 )
-if exist "params/Updater/EverythingWinDivert641" (
-    cls
-    call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert64.sys" "bin" "WinDivert64.sys"
-    if exist params/Updater/VerifyFiles1 (
-        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert64.%ALG%" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
-    )
+
+cls
+call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/WinDivert64.sys" "%~dp0bin" "WinDivert64.sys"
+if exist %~dp0utils\VerifyFiles (
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/windivert64.%ALG%" "%~dp0bin/WinDivert64.sys" "WinDivert64.sys"
 )
-if exist "params/Updater/EverythingCygwin11" (
-    cls
-    call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/cygwin1.dll" "bin" "cygwin1.dll"
-    if exist params/Updater/VerifyFiles1 (
-        call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/cygwin1.%ALG%" "%~dp0bin/cygwin1.dll" "cygwin1.dll"    )
+
+cls
+call :downloadfile "https://github.com/bol-van/zapret-win-bundle/raw/refs/heads/master/zapret-winws/cygwin1.dll" "%~dp0bin" "cygwin1.dll"
+if exist %~dp0utils\VerifyFiles (
+    call :verifyfile "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/hashes/cygwin1.%ALG%" "%~dp0bin/cygwin1.dll" "cygwin1.dll"
 )
+
 if "%~1"=="ext" exit /b
 pause
 goto menu
@@ -1109,7 +1133,7 @@ goto menu
 cd /d "%~dp0"
 call :getsources
 cls
-call :downloadfile "%LIST_SOURCE%" "lists\list-general.txt" "list-general.txt"
+call :downloadfile "%LIST_SOURCE%" "%~dp0lists\list-general.txt" "list-general.txt"
 >>"lists/list-general.txt" (
     echo encryptedsni.com
     echo adblockplus.org
@@ -1123,158 +1147,16 @@ goto menu
 :et
 cd /d "%~dp0"
 cls
-call :bin
-if exist "params/Updater/EverythingIPSet1" (
-    cls
-    call :ips
-)
-if exist "params/Updater/EverythingList1" (
-    cls
-    call :list
-)
+call :bin ext
+call :ips ext
+call :list ext
+
 pause
 goto menu
-
-:: ===== settings =====
-
-:settings
-setlocal EnableDelayedExpansion
-cd /d "%~dp0"
-cls
-
-:: check settings
-
-call :getsources
-
-if not exist "params/AutoUpdater/AutoUpdate1" (
-    set "param_autoupdate=Disabled"
-) else (
-    set "param_autoupdate=Enabled"
-)
-
-if not exist "params/Updater/EverythingCygwin11" (
-    set "param_cygwin1=Disabled"
-) else (
-    set "param_cygwin1=Enabled"
-)
-
-if not exist "params/Updater/EverythingWinDivert1" (
-    set "param_windivert=Disabled"
-) else (
-    set "param_windivert=Enabled"
-)
-
-if not exist "params/Updater/EverythingWinDivert641" (
-    set "param_windivert64=Disabled"
-) else (
-    set "param_windivert64=Enabled"
-)
-
-if not exist "params/Updater/EverythingWinws1" (
-    set "param_winws=Disabled"
-) else (
-    set "param_winws=Enabled"
-)
-
-if not exist "params/Updater/EverythingIPSet1" (
-    set "param_ipset_all=Disabled"
-) else (
-    set "param_ipset_all=Enabled"
-)
-
-if not exist "params/Updater/EverythingList1" (
-    set "param_list_general=Disabled"
-) else (
-    set "param_list_general=Enabled"
-)
-
-if not exist "params/Updater/VerifyFiles1" (
-    set "param_verify_when_updating=Disabled"
-) else (
-    set "param_verify_when_updating=Enabled"
-)
-
-
-echo Receiving default download sources...
-
-if not defined defaultipsetsource (
-for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/IPSetSource" -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultipsetsource=%%A"
-)
-
-if not defined defaultlistsource (
-for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/ListSource" -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultlistsource=%%A"
-)
-
-call :getalgorithm
-
-cls
-
-set "listdefault="
-if "%LIST_SOURCE%"=="%defaultlistsource%" set "listdefault=(Default)"
-
-set "ipsetdefault="
-if "%IPSET_SOURCE%"=="%defaultipsetsource%" set "ipsetdefault=(Default)"
-
-set "settings_choice=null"
-if not defined defaultipsetsource (
-    set "defaultipsetsource=https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/ipset-all.txt"
-    echo Could not receive the default ipset source! Fell back to "%defaultipsetsource%".
-)
-if not defined defaultlistsource (
-    set "defaultlistsource=https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt"
-    echo Could not receive the default list source! Fell back to "%defaultlistsource%".
-)
-echo =======Settings========
-echo 1. Update on start: %param_autoupdate%
-echo 2. Update cygwin1.dll: %param_cygwin1%
-echo 3. Update WinDivert.dll: %param_windivert%
-echo 4. Update WinDivert64.sys: %param_windivert64%
-echo 5. Update winws.exe: %param_winws%
-echo 6. Update ipset-all.txt: %param_ipset_all%
-echo 7. Update list-general.txt: %param_list_general%
-echo 8. Verify files when updating: %param_verify_when_updating%
-echo 9. list-general.txt Source: %LIST_SOURCE% %listdefault%
-echo 10. ipset-all.txt Source: %IPSET_SOURCE% %ipsetdefault%
-echo 11. Verifier Hash Algorithm: %ALG%
-echo 0. Back
-set /p settings_choice=Change Setting: 
-
-if "%settings_choice%"=="1" call :switchsetting "params\AutoUpdater\AutoUpdate1"
-if "%settings_choice%"=="2" call :switchsetting "params\Updater\EverythingCygwin11"
-if "%settings_choice%"=="3" call :switchsetting "params\Updater\EverythingWinDivert1"
-if "%settings_choice%"=="4" call :switchsetting "params\Updater\EverythingWinDivert641"
-if "%settings_choice%"=="5" call :switchsetting "params\Updater\EverythingWinws1"
-if "%settings_choice%"=="6" call :switchsetting "params\Updater\EverythingIPSet1"
-if "%settings_choice%"=="7" call :switchsetting "params\Updater\EverythingList1"
-if "%settings_choice%"=="8" call :switchsetting "params\Updater\VerifyFiles1"
-if "%settings_choice%"=="9" goto setlistsource
-if "%settings_choice%"=="10" goto setipsetsource
-if "%settings_choice%"=="11" goto setalgorithm
-if "%settings_choice%"=="0" goto menu
-goto settings
-
-:switchsetting
-if not exist "%~1" (
-    echo ENABLED > "%~1"
-) else (
-    del /f /q "%~1"
-)
-goto settings
 
 :: ===== set ipset source =====
 
 :setipsetsource
-
-echo Receiving the default ipset download source...
-
-if not defined defaultipsetsource (
-for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/IPSetSource" -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultipsetsource=%%A"
-)
-
-if not defined defaultipsetsource (
-    set "defaultipsetsource=https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/ipset-all.txt"
-    echo Could not receive the default ipset source! Fell back to "%defaultipsetsource%".
-)
 
 cls
 echo Current source: %IPSET_SOURCE% %ipsetdefault%
@@ -1288,30 +1170,19 @@ set /p IPSET_SOURCE_INPUT=Enter the new ipset-all.txt source (link, starts with 
 
 :: static commands
 
-if "%IPSET_SOURCE_INPUT%"=="0" goto settings
+if "%IPSET_SOURCE_INPUT%"=="0" goto menu
 if "%IPSET_SOURCE_INPUT%"=="1" set "IPSET_SOURCE_INPUT=%defaultipsetsource%"
 
 :: set source
 
-echo %IPSET_SOURCE_INPUT%> params/DownloadSources/IPSetSource
+echo %IPSET_SOURCE_INPUT%> %~dp0\utils\IPSetSource
 set "IPSET_SOURCE=%IPSET_SOURCE_INPUT%"
 
-goto settings
+goto menu
 
 :: ===== set list source =====
 
 :setlistsource
-
-echo Receiving the default list download source...
-
-if not defined defaultlistsource (
-for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/params/DownloadSources/ListSource" -TimeoutSec 5).Content.Trim()" 2^>nul') do set "defaultlistsource=%%A"
-)
-
-if not defined defaultlistsource (
-    set "defaultlistsource=https://raw.githubusercontent.com/bol-van/rulist/refs/heads/main/reestr_hostname.txt"
-    echo Could not receive the default list source! Fell back to "%defaultlistsource%".
-)
 
 cls
 echo Current source: %LIST_SOURCE% %listdefault%
@@ -1325,15 +1196,15 @@ set /p LIST_SOURCE_INPUT=Enter the new list-general.txt source (link, starts wit
 
 :: static commands
 
-if "%LIST_SOURCE_INPUT%"=="0" goto settings
+if "%LIST_SOURCE_INPUT%"=="0" goto menu
 if "%LIST_SOURCE_INPUT%"=="1" set "LIST_SOURCE_INPUT=%defaultlistsource%"
 
 :: set source
 
-echo %LIST_SOURCE_INPUT%> params/DownloadSources/ListSource
+echo %LIST_SOURCE_INPUT%> %~dp0\utils\ListSource
 set "LIST_SOURCE=%LIST_SOURCE_INPUT%"
 
-goto settings
+goto menu
 
 :: ===== set algorithm =====
 
@@ -1355,7 +1226,7 @@ set /p IPSET_SOURCE_INPUT=Enter the new algorithm:
 
 :: static commands
 
-if "%IPSET_SOURCE_INPUT%"=="0" goto settings
+if "%IPSET_SOURCE_INPUT%"=="0" goto menu
 if "%IPSET_SOURCE_INPUT%"=="1" call :switchalgorithm "SHA1"
 if "%IPSET_SOURCE_INPUT%"=="2" call :switchalgorithm "SHA256"
 if "%IPSET_SOURCE_INPUT%"=="3" call :switchalgorithm "SHA384"
@@ -1363,8 +1234,9 @@ if "%IPSET_SOURCE_INPUT%"=="4" call :switchalgorithm "SHA512"
 if "%IPSET_SOURCE_INPUT%"=="5" call :switchalgorithm "MD5"
 
 :switchalgorithm
-echo %~1> %~dp0params/Verifier/HashAlgorithm
-goto settings
+echo %~1> %~dp0utils\HashAlgorithm
+goto menu
+
 :: ===== verify all files =====
 
 :verifyall
@@ -1386,19 +1258,34 @@ if exist "%~dp0bin/cygwin1.dll" (
 pause
 goto menu
 
+:: switch verify files
+
+:verifyfilesparam
+
+cls
+if not exist "%~dp0utils\VerifyFiles" (
+    echo Enabling...
+    echo ENABLED > "%~dp0utils\VerifyFiles"
+) else (
+    echo Disabling...
+    del /f /q "%~dp0utils\VerifyFiles"
+)
+pause
+goto menu
+
 :: ===== function: get download sources =====
 
 :getsources
 
-set /p IPSET_SOURCE=<%~dp0params/DownloadSources/IPSetSource
-set /p LIST_SOURCE=<%~dp0params/DownloadSources/ListSource
+set /p IPSET_SOURCE=<%~dp0\utils\IPSetSource
+set /p LIST_SOURCE=<%~dp0\utils\ListSource
 exit /b
 
 :: ===== function: get hash algorithm =====
 
 :getalgorithm
 
-set /p ALG=<%~dp0params/Verifier/HashAlgorithm
+set /p ALG=<%~dp0\utils\HashAlgorithm
 exit/b
 
 :: ===== function: download file =====
