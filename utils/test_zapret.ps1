@@ -384,7 +384,7 @@ $dpiTargets = Build-DpiTargets -CustomUrl $dpiCustomUrl
 # Config
 $targetDir = $rootDir
 if (-not $targetDir) { $targetDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
-$batFiles = Get-ChildItem -Path $targetDir -Filter "*.bat" | Where-Object { $_.Name -notlike "service*" } | Sort-Object Name
+$batFiles = Get-ChildItem -Path $targetDir -Filter "*.bat" | Where-Object { $_.Name -notlike "service*" } | Sort-Object { [Regex]::Replace($_.Name, "\d+", { $args[0].Value.PadLeft(8, "0") }) }
 
 $globalResults = @()
 
@@ -545,17 +545,17 @@ function Restore-WinwsSnapshot {
         if ($current -and $current -contains $p.CommandLine) { continue }
 
         $exe = $p.ExecutablePath
-        $args = ""
+        $processArgs = ""
         if ($p.CommandLine) {
             $quotedExe = '"' + $exe + '"'
             if ($p.CommandLine.StartsWith($quotedExe)) {
-                $args = $p.CommandLine.Substring($quotedExe.Length).Trim()
+                $processArgs = $p.CommandLine.Substring($quotedExe.Length).Trim()
             } elseif ($p.CommandLine.StartsWith($exe)) {
-                $args = $p.CommandLine.Substring($exe.Length).Trim()
+                $processArgs = $p.CommandLine.Substring($exe.Length).Trim()
             }
         }
 
-        Start-Process -FilePath $exe -ArgumentList $args -WorkingDirectory (Split-Path $exe -Parent) -WindowStyle Minimized | Out-Null
+        Start-Process -FilePath $exe -ArgumentList $processArgs -WorkingDirectory (Split-Path $exe -Parent) -WindowStyle Minimized | Out-Null
     }
 }
 
