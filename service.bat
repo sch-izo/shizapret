@@ -74,8 +74,12 @@ call :check_updates_switch_status
 call :getsources
 call :getalgorithm
 
-if "%IPSET_SOURCE%"=="%defaultipsetsource%" set "ipsetdefault=[default]"
-if "%LIST_SOURCE%"=="%defaultlistsource%" set "listdefault=[default]"
+if "!IPSET_SOURCE!"=="%defaultipsetsource%" (
+    set "ipsetdefault=[default]"
+) else set "ipsetdefault="
+if "!LIST_SOURCE!"=="%defaultlistsource%" (
+    set "listdefault=[default]"
+) else set "listdefault="
 
 if not exist "%~dp0utils\VerifyFiles" (
     set "param_verify_when_updating=disabled"
