@@ -56,7 +56,7 @@ if "%1"=="admin" (
     call :check_extracted
     call :check_command powershell
     echo Requesting admin rights...
-    powershell -Command "Start-Process 'cmd.exe' -ArgumentList '/c \"\"%~f0\" admin\"' -Verb RunAs"
+    powershell -NoProfile -Command "Start-Process 'cmd.exe' -ArgumentList '/c \"\"%~f0\" admin\"' -Verb RunAs"
     exit
 )
 
@@ -247,7 +247,7 @@ goto menu
 :: INSTALL =============================
 :service_install
 cls
-chcp 65001 > nul
+chcp 437 > nul
 
 :: Main
 cd /d "%~dp0"
@@ -269,7 +269,7 @@ cls
 :: Searching for .bat files in current folder, except for files that start with "service" and "calls"
 echo Pick one of the options:
 set "count=0"
-for /f "delims=" %%F in ('powershell -Command "Get-ChildItem -Filter '*.bat' | Where-Object { $_.Name -notlike 'service*' } | Sort-Object { [Regex]::Replace($_.Name, '\d+', { $args[0].Value.PadLeft(8, '0') }) } | ForEach-Object { $_.Name }"') do (
+for /f "delims=" %%F in ('powershell -NoProfile -Command "Get-ChildItem -LiteralPath '.' -Filter '*.bat' | Where-Object { $_.Name -notlike 'service*' } | Sort-Object { [Regex]::Replace($_.Name, '(\d+)', { $args[0].Value.PadLeft(8, '0') }) } | ForEach-Object { $_.Name }"') do (
     set /a count+=1
     echo !count!. %%F
     set "file!count!=%%F"
@@ -403,10 +403,10 @@ cls
 :: Set current version and URLs
 set "GITHUB_VERSION_URL=https://raw.githubusercontent.com/sch-izo/shizapret/refs/heads/main/.service/version.txt"
 set "GITHUB_RELEASE_URL=https://github.com/sch-izo/shizapret/releases/tag/"
-set "GITHUB_DOWNLOAD_URL=https://github.com/sch-izo/shizapret/releases/latest/download/shizapret-"
+set "GITHUB_DOWNLOAD_URL=https://github.com/sch-izo/shizapret/releases/latest"
 
 :: Get the latest version from GitHub
-for /f "delims=" %%A in ('powershell -command "(Invoke-WebRequest -Uri \"%GITHUB_VERSION_URL%\" -Headers @{\"Cache-Control\"=\"no-cache\"} -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "GITHUB_VERSION=%%A"
+for /f "delims=" %%A in ('powershell -NoProfile -Command "(Invoke-WebRequest -Uri \"%GITHUB_VERSION_URL%\" -Headers @{\"Cache-Control\"=\"no-cache\"} -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "GITHUB_VERSION=%%A"
 
 :: Error handling
 if not defined GITHUB_VERSION (
@@ -428,33 +428,8 @@ if "%LOCAL_VERSION%"=="%GITHUB_VERSION%" (
 echo New version available: %GITHUB_VERSION%
 echo Release page: %GITHUB_RELEASE_URL%%GITHUB_VERSION%
 
-set "CHOICE="
-set /p "CHOICE=Do you want to install the new version? (Y/N) (default: Y) "
-if "%CHOICE%"=="" set "CHOICE=Y"
-if /i "%CHOICE%"=="y" set "CHOICE=Y"
-
-if /i "%CHOICE%"=="Y" (
-    cd /d "%~dp0"
-    cls
-    call :downloadfile "%GITHUB_DOWNLOAD_URL%%GITHUB_VERSION%.zip" "%~dp0" "shizapret-%GITHUB_VERSION%.zip"
-    cls
-    echo Extracting shizapret-%GITHUB_VERSION%.zip...
-    powershell -Command "Expand-Archive 'shizapret-%GITHUB_VERSION%.zip' '%GITHUB_VERSION%'"
-    del shizapret-%GITHUB_VERSION%.zip
-    cls
-    if exist "%GITHUB_VERSION%\shizapret.bat" (
-    echo Update installed into "%~dp0%GITHUB_VERSION%".
-    set "SERVICE_CHOICE="
-    set /p "SERVICE_CHOICE=Do you want to automatically remove service? (Y/N) (default: Y) "
-    if "%SERVICE_CHOICE%"=="" set "SERVICE_CHOICE=Y"
-    if /i "%SERVICE_CHOICE%"=="y" set "SERVICE_CHOICE=Y"
-    if /i "%SERVICE_CHOICE%"=="Y" (
-        call :service_remove shizapret
-    )
-    ) else (
-    call :PrintRed "Update was not installed."
-    )
-)
+echo Opening the download page...
+start "" "%GITHUB_DOWNLOAD_URL%"
 
 
 if "%1"=="soft" exit
@@ -600,7 +575,7 @@ echo:
 
 :: DNS
 set "dnsfound=0"
-for /f "delims=" %%a in ('powershell -Command "Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled -eq $true} | ForEach-Object {$_.DNSServerSearchOrder} | Where-Object {$_ -match '^192\.168\.'} | Measure-Object | Select-Object -ExpandProperty Count"') do (
+for /f "delims=" %%a in ('powershell -NoProfile -Command "Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled -eq $true} | ForEach-Object {$_.DNSServerSearchOrder} | Where-Object {$_ -match '^192\.168\.'} | Measure-Object | Select-Object -ExpandProperty Count"') do (
     if %%a gtr 0 (
         set "dnsfound=1"
     )
@@ -615,7 +590,7 @@ echo:
 
 :: Secure DNS
 set "dohfound=0"
-for /f "delims=" %%a in ('powershell -Command "Get-ChildItem -Recurse -Path 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' | Get-ItemProperty | Where-Object { $_.DohFlags -gt 0 } | Measure-Object | Select-Object -ExpandProperty Count"') do (
+for /f "delims=" %%a in ('powershell -NoProfile -Command "Get-ChildItem -Recurse -Path 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' | Get-ItemProperty | Where-Object { $_.DohFlags -gt 0 } | Measure-Object | Select-Object -ExpandProperty Count"') do (
     if %%a gtr 0 (
         set "dohfound=1"
     )
@@ -984,7 +959,7 @@ echo Checking hosts file...
 if exist "%SystemRoot%\System32\curl.exe" (
     curl -L -s -o "%tempFile%" "%hostsUrl%"
 ) else (
-    powershell -Command ^
+    powershell -NoProfile -Command ^
         "$url = '%hostsUrl%';" ^
         "$out = '%tempFile%';" ^
         "$res = Invoke-WebRequest -Uri $url -TimeoutSec 10 -UseBasicParsing;" ^
@@ -1051,15 +1026,15 @@ goto menu
 :: Utility functions
 
 :PrintGreen
-powershell -Command "Write-Host \"%~1\" -ForegroundColor Green"
+powershell -NoProfile -Command "Write-Host \"%~1\" -ForegroundColor Green"
 exit /b
 
 :PrintRed
-powershell -Command "Write-Host \"%~1\" -ForegroundColor Red"
+powershell -NoProfile -Command "Write-Host \"%~1\" -ForegroundColor Red"
 exit /b
 
 :PrintYellow
-powershell -Command "Write-Host \"%~1\" -ForegroundColor Yellow"
+powershell -NoProfile -Command "Write-Host \"%~1\" -ForegroundColor Yellow"
 exit /b
 
 :check_command
@@ -1301,7 +1276,7 @@ exit/b
 
 echo Downloading %~3...
 echo Source: %~1
-powershell -Command "Start-BitsTransfer -Source \"%~1\" -Destination \"%~2\" -DisplayName \"%~3\" -Description \" \""
+powershell -NoProfile -Command "Start-BitsTransfer -Source \"%~1\" -Destination \"%~2\" -DisplayName \"%~3\" -Description \" \""
 exit /b
 
 :: ===== function: verify file hash =====
@@ -1312,9 +1287,9 @@ exit /b
 :: call :verifyfile "github.com/example.%ALG%" "bin/example.bin" "Example"
 
 echo Verifying %~3...
-for /f "delims=" %%A in ('powershell -Command "(Invoke-WebRequest -Uri \"%~1\" -Headers @{\"Cache-Control\"=\"no-cache\"} -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "CORRECTHASH=%%A"
+for /f "delims=" %%A in ('powershell -NoProfile -Command "(Invoke-WebRequest -Uri \"%~1\" -Headers @{\"Cache-Control\"=\"no-cache\"} -UseBasicParsing -TimeoutSec 5).Content.Trim()" 2^>nul') do set "CORRECTHASH=%%A"
 
-for /f "tokens=2 delims=: " %%A in ('powershell -Command "Get-FileHash %~2 -Algorithm %ALG% | Format-List -Property Hash"') do set "LOCALHASH=%%A"
+for /f "tokens=2 delims=: " %%A in ('powershell -NoProfile -Command "Get-FileHash %~2 -Algorithm %ALG% | Format-List -Property Hash"') do set "LOCALHASH=%%A"
 if not defined CORRECTHASH (
     call :PrintYellow "Could not reach %~1 to verify %~3. Your hash: %LOCALHASH%"
     exit /b

@@ -8,3 +8,8 @@
 ::1
 fc00::/7
 fe80::/10
+tanki.su
+lesta.ru
+korabli.su
+tanksblitz.ru
+reg.ru
