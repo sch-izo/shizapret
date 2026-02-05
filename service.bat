@@ -1013,7 +1013,7 @@ goto menu
 
 :: RUN TESTS =============================
 :run_tests
-chcp 65001 >nul
+chcp 437 >nul
 cls
 
 echo Starting configuration tests...
