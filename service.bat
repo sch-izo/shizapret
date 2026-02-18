@@ -1018,7 +1018,7 @@ cls
 
 echo Starting configuration tests...
 echo.
-start "" powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0utils\test_zapret.ps1"
+start "" powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0utils\test zapret.ps1"
 pause
 goto menu
 
