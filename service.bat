@@ -46,11 +46,19 @@ if "%~1"=="et" (
     exit /b
 )
 
+if "%~1"=="load_user_lists" (
+    call :load_user_lists
+    exit /b
+)
+
 if "%1"=="admin" (
     call :check_command chcp
     call :check_command find
     call :check_command findstr
     call :check_command netsh
+	
+    call :load_user_lists
+	
     echo Started with admin rights
 ) else (
     call :check_extracted
@@ -95,13 +103,13 @@ echo   -------------------------------------------------------------------------
 echo.
 echo   :: SERVICE                 :: SETTINGS
 echo      1. Install Service         21. Switch Game Filter (UDP)  [!GameFilterStatus!]
-echo      2. Remove Services         22. Switch Game Filter (TCP)  [!GameFilterTCPStatus!]
-echo      3. Check Status            23. Switch Check Updates      [!CheckUpdatesStatus!]
-echo                                 24. Switch ipset              [!IPsetStatus!]
-echo   :: UPDATES                    25. list-general Source       !listdefault!
-echo      4. Update bin\ Folder      26. ipset-all Source          !ipsetdefault!
-echo      5. Update list-general     27. Verify files on update    [!param_verify_when_updating!]
-echo      6. Update ipset-all        28. Verifier Hash Algorithm   [!ALG!]
+echo      2. Remove Service          22. Switch Check Updates      [!CheckUpdatesStatus!]
+echo      3. Check Status            23. Switch ipset              [!IPsetStatus!]
+echo                                 24. list-general Source       !listdefault!
+echo   :: UPDATES                    25. ipset-all Source          !ipsetdefault!
+echo      4. Update bin\ Folder      26. Verify files on update    [!param_verify_when_updating!]
+echo      5. Update list-general     27. Verifier Hash Algorithm   [!ALG!]
+echo      6. Update ipset-all        
 echo      7. Update Everything
 echo      8. Update hosts File
 echo      9. Check for Updates
@@ -137,17 +145,32 @@ if "%menu_choice%"=="12" goto verifyall
 
 :: Settings
 if "%menu_choice%"=="21" goto game_switch
-if "%menu_choice%"=="22" goto game_switch_tcp
-if "%menu_choice%"=="23" goto check_updates_switch
-if "%menu_choice%"=="24" goto ipset_switch
-if "%menu_choice%"=="25" goto setlistsource
-if "%menu_choice%"=="26" goto setipsetsource
-if "%menu_choice%"=="27" goto verifyfilesparam
-if "%menu_choice%"=="28" goto setalgorithm
+if "%menu_choice%"=="22" goto check_updates_switch
+if "%menu_choice%"=="23" goto ipset_switch
+if "%menu_choice%"=="24" goto setlistsource
+if "%menu_choice%"=="25" goto setipsetsource
+if "%menu_choice%"=="26" goto verifyfilesparam
+if "%menu_choice%"=="27" goto setalgorithm
 
 if "%menu_choice%"=="0" exit /b
 
 goto menu
+
+:: LOAD USER LISTS =====================
+:load_user_lists
+set "LISTS_PATH=%~dp0lists\"
+
+if not exist "%LISTS_PATH%ipset-exclude-user.txt" (
+    echo 203.0.113.113/32>"%LISTS_PATH%ipset-exclude-user.txt"
+)
+if not exist "%LISTS_PATH%list-general-user.txt" (
+    echo domain.example.abc>"%LISTS_PATH%list-general-user.txt"
+)
+if not exist "%LISTS_PATH%list-exclude-user.txt" (
+    echo domain.example.abc>"%LISTS_PATH%list-exclude-user.txt"
+)
+
+exit /b
 
 :: TCP ENABLE ==========================
 :tcp_enable
@@ -340,9 +363,10 @@ for /f "tokens=*" %%a in ('type "!selectedFile!"') do (
                     )
                 ) else if "!arg:~0,12!" EQU "%%GameFilter%%" (
                     set "arg=%GameFilter%"
-                ) else if "!arg:~0,16!" EQU "%%GameFilterTCP%%" (
+                ) else if "!arg:~0,15!" EQU "%%GameFilterTCP%%" (
                     set "arg=%GameFilterTCP%"
-                ) 
+                ) else if "!arg:~0,15!" EQU "%%GameFilterUDP%%" (
+                    set "arg=%GameFilterUDP%"
 
                 if !mergeargs!==1 (
                     set "temp_args=!temp_args!,!arg!"
@@ -603,6 +627,17 @@ if !dohfound!==0 (
 )
 echo:
 
+:: Hosts file check
+set "hostsFile=%SystemRoot%\System32\drivers\etc\hosts"
+if exist "%hostsFile%" (
+    set "yt_found=0"
+    >nul 2>&1 findstr /I "youtube.com" "%hostsFile%" && set "yt_found=1"
+    >nul 2>&1 findstr /I "yotu.be" "%hostsFile%" && set "yt_found=1"
+    if !yt_found!==1 (
+        call :PrintYellow "[?] Your hosts file contains entries for youtube.com or yotu.be. This may cause problems with YouTube access"
+    )
+)
+
 :: WinDivert conflict
 tasklist /FI "IMAGENAME eq winws.exe" | find /I "winws.exe" > nul
 set "winws_running=!errorlevel!"
@@ -789,23 +824,37 @@ chcp 437 > nul
 
 set "gameFlagFile=%~dp0utils\game_filter.enabled"
 
-if exist "%gameFlagFile%" (
-    set "GameFilterStatus=enabled"
-    set "GameFilter=1024-65535"
-) else (
+if not exist "%gameFlagFile%" (
     set "GameFilterStatus=disabled"
     set "GameFilter=12"
-)
-
-set "gameTCPFlagFile=%~dp0utils\game_filtertcp.enabled"
-
-if exist "%gameTCPFlagFile%" (
-    set "GameFilterTCPStatus=enabled"
-    set "GameFilterTCP=1024-65535"
-) else (
-    set "GameFilterTCPStatus=disabled"
     set "GameFilterTCP=12"
+    set "GameFilterUDP=12"
+    exit /b
 )
+
+set "GameFilterMode="
+for /f "usebackq delims=" %%A in ("%gameFlagFile%") do (
+    if not defined GameFilterMode set "GameFilterMode=%%A"
+)
+
+if /i "%GameFilterMode%"=="all" (
+    set "GameFilterStatus=enabled (TCP and UDP)"
+    set "GameFilter=1024-65535"
+    set "GameFilterTCP=1024-65535"
+    set "GameFilterUDP=1024-65535"
+) else if /i "%GameFilterMode%"=="tcp" (
+    set "GameFilterStatus=enabled (TCP)"
+    set "GameFilter=1024-65535"
+    set "GameFilterTCP=1024-65535"
+    set "GameFilterUDP=12"
+) else (
+    set "GameFilterStatus=enabled (UDP)"
+    set "GameFilter=1024-65535"
+    set "GameFilterTCP=12"
+    set "GameFilterUDP=1024-65535"
+)
+exit /b
+
 exit /b
 
 
@@ -813,32 +862,37 @@ exit /b
 chcp 437 > nul
 cls
 
-if not exist "%gameFlagFile%" (
-    echo Enabling game filter...
-    echo ENABLED > "%gameFlagFile%"
-    call :PrintYellow "Restart shizapret to apply the changes."
+echo Select game filter mode:
+echo   0. Disable
+echo   1. TCP and UDP
+echo   2. TCP only
+echo   3. UDP only
+echo.
+set "GameFilterChoice=0"
+set /p "GameFilterChoice=Select option (0-3, default: 0): "
+if %GameFilterChoice%=="" set "GameFilterChoice=0"
+
+if "%GameFilterChoice%"=="0" (
+    if exist "%gameFlagFile%" (
+        del /f /q "%gameFlagFile%"
+    ) else (
+        goto menu
+    )
+) else if "%GameFilterChoice%"=="1" (
+    echo all>"%gameFlagFile%"
+) else if "%GameFilterChoice%"=="2" (
+    echo tcp>"%gameFlagFile%"
+) else if "%GameFilterChoice%"=="3" (
+    echo udp>"%gameFlagFile%"
 ) else (
-    echo Disabling game filter...
-    del /f /q "%gameFlagFile%"
-    call :PrintYellow "Restart shizapret to apply the changes."
+    echo Invalid choice, exiting...
+    pause
+    goto menu
 )
 
+call :PrintYellow "Restart shizapret to apply the changes"
 pause
 goto menu
-
-:game_switch_tcp
-chcp 437 > nul
-cls
-
-if not exist "%gameTCPFlagFile%" (
-    echo Enabling game filter for TCP...
-    echo ENABLED > "%gameTCPFlagFile%"
-    call :PrintYellow "Restart shizapret to apply the changes."
-) else (
-    echo Disabling game filter for TCP...
-    del /f /q "%gameTCPFlagFile%"
-    call :PrintYellow "Restart shizapret to apply the changes."
-)
 
 pause
 goto menu
