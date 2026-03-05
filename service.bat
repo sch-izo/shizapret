@@ -367,6 +367,7 @@ for /f "tokens=*" %%a in ('type "!selectedFile!"') do (
                     set "arg=%GameFilterTCP%"
                 ) else if "!arg:~0,15!" EQU "%%GameFilterUDP%%" (
                     set "arg=%GameFilterUDP%"
+		)
 
                 if !mergeargs!==1 (
                     set "temp_args=!temp_args!,!arg!"
