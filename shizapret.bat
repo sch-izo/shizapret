@@ -1,4 +1,4 @@
-:: general (ALT 11) (from Flowseal/zapret-discord-youtube) + added ports/IPs/hosts from general (Dronatar) (by Dronatar)
+:: general (ALT 11) (from Flowseal/zapret-discord-youtube) with modifications + added ports/IPs/hosts from general (Dronatar) (by Dronatar)
 
 :: https://github.com/Flowseal/zapret-discord-youtube
 :: https://github.com/Flowseal/zapret-discord-youtube/discussions/3279
