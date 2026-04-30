@@ -871,7 +871,7 @@ echo   3. UDP only
 echo.
 set "GameFilterChoice=0"
 set /p "GameFilterChoice=Select option (0-3, default: 0): "
-if %GameFilterChoice%=="" set "GameFilterChoice=0"
+if "%GameFilterChoice%"=="" set "GameFilterChoice=0"
 
 if "%GameFilterChoice%"=="0" (
     if exist "%gameFlagFile%" (
@@ -1012,7 +1012,12 @@ set "needsUpdate=0"
 echo Checking hosts file...
 
 if exist "%SystemRoot%\System32\curl.exe" (
-    curl -L -s -o "%tempFile%" "%hostsUrl%"
+    curl --version | find "libcurl/7"
+    if !errorlevel!==0 (
+        curl --ssl-no-revoke -L -o "%listFile%" "%url%"
+    ) else (
+        curl --ssl-revoke-best-effort -L -o "%listFile%" "%url%"
+    )
 ) else (
     powershell -NoProfile -Command ^
         "$url = '%hostsUrl%';" ^
