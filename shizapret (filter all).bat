@@ -15,8 +15,6 @@ call service.bat status_zapret
 call service.bat load_game_filter
 
 if not exist "%BIN%cygwin1.dll" call service.bat bin
-if not exist "%LISTS%list-general.txt" call service.bat list
-if not exist "%LISTS%ipset-all.txt" call service.bat ips
 
 call service.bat check_updates
 call service.bat load_user_lists
