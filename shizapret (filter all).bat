@@ -1,4 +1,4 @@
-:: shizapret.bat (filters all domains (excluding list-exclude and ipset-exclude and strategies for specific services))
+:: shizapret.bat + filter all domains (excluding list-exclude and ipset-exclude and strategies for specific services)
 
 :: https://github.com/Flowseal/zapret-discord-youtube
 :: https://github.com/Flowseal/zapret-discord-youtube/discussions/3279
