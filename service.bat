@@ -1013,12 +1013,7 @@ set "needsUpdate=0"
 echo Checking hosts file...
 
 if exist "%SystemRoot%\System32\curl.exe" (
-    curl --version | find "libcurl/7"
-    if !errorlevel!==0 (
-        curl --ssl-no-revoke -L -o "%listFile%" "%url%"
-    ) else (
-        curl --ssl-revoke-best-effort -L -o "%listFile%" "%url%"
-    )
+    curl -L -s -o "%tempFile%" "%hostsUrl%"
 ) else (
     powershell -NoProfile -Command ^
         "$url = '%hostsUrl%';" ^
