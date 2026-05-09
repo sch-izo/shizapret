@@ -81,6 +81,7 @@ call :game_switch_status
 call :check_updates_switch_status
 call :getsources
 call :getalgorithm
+call :get_strategy_name
 
 if "!IPSET_SOURCE!"=="%defaultipsetsource%" (
     set "ipsetdefault=[default]"
@@ -98,7 +99,8 @@ if not exist "%~dp0utils\VerifyFiles" (
 set "menu_choice=null"
 
 echo.
-echo   MENU v!LOCAL_VERSION!
+echo   SERVICE MENU v!LOCAL_VERSION!
+if defined CurrentStrategy (echo   !CurrentStrategy!)
 echo   --------------------------------------------------------------------------
 echo.
 echo   :: SERVICE                 :: SETTINGS
@@ -1077,6 +1079,13 @@ echo.
 start "" powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0utils\test zapret.ps1"
 pause
 goto menu
+
+
+:: Get strategy name
+:get_strategy_name
+set "CurrentStrategy="
+for /f "tokens=2*" %%A in ('reg query "HKLM\System\CurrentControlSet\Services\zapret" /v shizapret 2^>nul') do set "CurrentStrategy=Installed Strategy: %%B"
+exit /b
 
 
 :: Utility functions
