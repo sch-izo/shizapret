@@ -73,6 +73,7 @@ set "defaultipsetsource=https://raw.githubusercontent.com/bol-van/rulist/refs/he
 
 :: MENU ================================
 setlocal EnableDelayedExpansion
+title SERVICE MENU v!LOCAL_VERSION!
 :menu
 cls
 
