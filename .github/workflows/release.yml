@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify version matches version.txt
+        run: |
+          VERSION=$(cat .service/version.txt)
+          if [ "$VERSION" != "${{ github.event.inputs.tag }}" ]; then
+            echo "Error: tag '${{ github.event.inputs.tag }}' does not match .service/version.txt ('$VERSION')"
+            exit 1
+          fi
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip tar rar
+
+      - name: Prepare release bundle
+        run: |
+          NAME="shizapret-${{ github.event.inputs.tag }}"
+
+          mkdir "$NAME"
+
+          cp -r bin "$NAME/"
+          cp -r lists "$NAME/"
+          cp -r utils "$NAME/"
+          cp *.bat "$NAME/"
+
+      - name: Create archives
+        run: |
+          NAME="shizapret-${{ github.event.inputs.tag }}"
+
+          zip -qr "${NAME}.zip" "$NAME"
+          rar a -idq "${NAME}.rar" "$NAME"
+          tar --owner=0 --group=0 -czf "${NAME}.tar.gz" "$NAME"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          name: ${{ github.event.inputs.tag }}
+          files: |
+            shizapret-${{ github.event.inputs.tag }}.zip
+            shizapret-${{ github.event.inputs.tag }}.rar
+            shizapret-${{ github.event.inputs.tag }}.tar.gz
