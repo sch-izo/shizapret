@@ -6,6 +6,9 @@ on:
       tag:
         description: 'Release tag'
         required: true
+      zdyver:
+        description: 'zapret-discord-youtube version'
+        required: true
 
 jobs:
   release:
@@ -49,11 +52,20 @@ jobs:
           rar a -idq "${NAME}.rar" "$NAME"
           tar --owner=0 --group=0 -czf "${NAME}.tar.gz" "$NAME"
 
+      - name: Print SHA256 checksums
+        run: |
+          NAME="shizapret-${{ github.event.inputs.tag }}"
+
+          sha256sum \
+            "${NAME}.zip" \
+            "${NAME}.rar" \
+            "${NAME}.tar.gz"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag }}
-          name: ${{ github.event.inputs.tag }}
+          name: v${{ github.event.inputs.zdyver }} - v${{ github.event.inputs.tag }}
           files: |
             shizapret-${{ github.event.inputs.tag }}.zip
             shizapret-${{ github.event.inputs.tag }}.rar
