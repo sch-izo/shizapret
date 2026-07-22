@@ -109,8 +109,8 @@ echo      1. Install Service         21. Switch Game Filter (UDP)  [!GameFilterS
 echo      2. Remove Service          22. Switch Check Updates      [!CheckUpdatesStatus!]
 echo      3. Check Status            23. Switch ipset              [!IPsetStatus!]
 echo                                 24. Replace active fakes
-echo   :: UPDATES                    25. list-general Source       [!listdefault!]
-echo      4. Update bin\ Folder      26. ipset-all Source          [!ipsetdefault!]
+echo   :: UPDATES                    25. list-general Source       !listdefault!
+echo      4. Update bin\ Folder      26. ipset-all Source          !ipsetdefault!
 echo      5. Update list-general     27. Verify files on update    [!param_verify_when_updating!]
 echo      6. Update ipset-all        28. Verifier Hash Algorithm   [!ALG!]
 echo      7. Update Everything
