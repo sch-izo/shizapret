@@ -754,76 +754,30 @@ if !found_any_conflict!==1 (
 
 :: Discord cache clearing
 set "CHOICE="
-set /p "CHOICE=Do you want to clear the Discord cache? (Y/N) (default: Y)  "
+set /p "CHOICE=Do you want to clear the Discord cache (Stable, PTB, Canary, Development)? (Y/N) (default: Y) "
 if "!CHOICE!"=="" set "CHOICE=Y"
 if "!CHOICE!"=="y" set "CHOICE=Y"
 
 if /i "!CHOICE!"=="Y" (
-    for %%i in ("Discord.exe" "DiscordPTB.exe" "DiscordCanary.exe") do (
-        tasklist /FI "IMAGENAME eq %%i" | findstr /I "%%i" > nul
-        if !errorlevel!==0 (
-            echo %%i is running, closing...
-            taskkill /IM %%i /F > nul
-            if !errorlevel! == 0 (
-                call :PrintGreen "%%i was successfully closed"
-            ) else (
-                call :PrintRed "Unable to close %%i"
-            )
-        )
+    set "discordFound=0"
+    if exist "%APPDATA%\discord\" (
+        set "discordFound=1"
+        call :clear_discord_cache "Discord.exe" "Discord" "%APPDATA%\discord"
     )
-
-    set "discordCacheDir=%appdata%\discord"
-    set "discordPTBCacheDir=%appdata%\discordptb"
-    set "discordCanaryCacheDir=%appdata%\discordcanary"
-
-    echo Cleaning Discord cache...
-    for %%d in ("Cache" "Code Cache" "GPUCache") do (
-        set "dirPath=!discordCacheDir!\%%~d"
-        if exist "!dirPath!" (
-            rd /s /q "!dirPath!"
-            if !errorlevel!==0 (
-                call :PrintGreen "Successfully deleted !dirPath!"
-            ) else (
-                call :PrintRed "Failed to delete !dirPath!"
-            )
-        ) else (
-            call :PrintRed "!dirPath! does not exist"
-        )
+    if exist "%APPDATA%\discordptb\" (
+        set "discordFound=1"
+        call :clear_discord_cache "DiscordPTB.exe" "Discord PTB" "%APPDATA%\discordptb"
     )
-    
-    if exist "!discordPTBCacheDir!\" (
-        echo Cleaning Discord PTB cache...
-        for %%d in ("Cache" "Code Cache" "GPUCache") do (
-            set "dirPath=!discordPTBCacheDir!\%%~d"
-            if exist "!dirPath!" (
-                rd /s /q "!dirPath!"
-                if !errorlevel!==0 (
-                    call :PrintGreen "Successfully deleted !dirPath!"
-                ) else (
-                    call :PrintRed "Failed to delete !dirPath!"
-                )
-            ) else (
-                call :PrintRed "!dirPath! does not exist"
-            )
-        )
+    if exist "%APPDATA%\discordcanary\" (
+        set "discordFound=1"
+        call :clear_discord_cache "DiscordCanary.exe" "Discord Canary" "%APPDATA%\discordcanary"
     )
-
-    if exist "!discordCanaryCacheDir!\" (
-        echo Cleaning Discord Canary cache...
-        for %%d in ("Cache" "Code Cache" "GPUCache") do (
-            set "dirPath=!discordCanaryCacheDir!\%%~d"
-            if exist "!dirPath!" (
-                rd /s /q "!dirPath!"
-                if !errorlevel!==0 (
-                    call :PrintGreen "Successfully deleted !dirPath!"
-                ) else (
-                    call :PrintRed "Failed to delete !dirPath!"
-                )
-            ) else (
-                call :PrintRed "!dirPath! does not exist"
-            )
-        )
+    if exist "%APPDATA%\discorddevelopment\" (
+        set "discordFound=1"
+        call :clear_discord_cache "DiscordDevelopment.exe" "Discord Development" "%APPDATA%\discorddevelopment"
     )
+    if !discordFound! equ 0 call :PrintRed "Discord installations were not found"
+    set "discordFound="
 )
 echo:
 
