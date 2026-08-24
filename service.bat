@@ -474,6 +474,10 @@ goto menu
 chcp 437 > nul
 cls
 
+:: shizapret path
+call :PrintGreen "shizapret is installed in: '%~dp0'"
+echo:
+
 :: Base Filtering Engine
 sc query BFE | findstr /I "RUNNING" > nul
 if !errorlevel!==0 (
@@ -575,6 +579,27 @@ if !errorlevel!==0 (
     call :PrintRed "Try to uninstall or disable SmartByte through services.msc"
 ) else (
     call :PrintGreen "SmartByte check passed"
+)
+echo:
+
+:: Cyrillic path
+powershell -NoProfile -Command "if ('%~dp0' -match '[\u0430-\u044F\u0410-\u042F\u0451\u0401]') { exit 0 } else { exit 1 }"
+if !errorlevel!==0 (
+    call :PrintYellow "[?] The path where shizapret is installed contains Cyrillic characters"
+    call :PrintYellow "If bypass doesn't work, move shizapret to another directory without Cyrillic characters"
+) else (
+    call :PrintGreen "Cyrillic path check passed"
+)
+echo:
+
+:: OneDrive
+if defined OneDrive (
+    echo %~dp0\ | findstr /I /C:"%OneDrive%\\" > nul
+    if !errorlevel!==0 (
+        call :PrintRed "[X] shizapret is installed in a OneDrive folder"
+        call :PrintRed "If the bypass doesn't work, try to move shizapret to another directory"
+        )
+    )
 )
 echo:
 
