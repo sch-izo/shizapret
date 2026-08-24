@@ -598,10 +598,10 @@ if defined OneDrive (
     if !errorlevel!==0 (
         call :PrintRed "[X] shizapret is installed in a OneDrive folder"
         call :PrintRed "If the bypass doesn't work, try to move shizapret to another directory"
+        echo:
         )
     )
 )
-echo:
 
 :: WinDivert64.sys file
 set "BIN_PATH=%~dp0bin\"
